@@ -150,70 +150,69 @@ def calcular_risco(paciente: dict) -> float:
     return min(risco, RISCO_TETO)
 
 
-def gerar_paciente(paciente_id: int) -> dict:
-    """Gera os dados de um paciente com correlacoes clinicas realistas.
+def _sortear_perfil_base() -> tuple[dict, dict]:
+    """Sorteia variaveis demograficas e habitos de vida do paciente.
 
-    O processo segue tres etapas:
-    1. Sorteia variaveis demograficas e habitos de vida
-    2. Deriva sinais vitais e exames laboratoriais aplicando correlacoes
-       entre as variaveis (idade -> pressao, tabagismo -> colesterol,
-       IMC -> glicemia, atividade fisica -> frequencia cardiaca)
-    3. Calcula o risco acumulado e determina doenca cardiaca e sintomas
+    As prevalencias refletem dados epidemiologicos brasileiros:
+    tabagismo ~22% (IBGE/PNS), atividade fisica regular ~55%,
+    historico familiar cardiaco ~25%.
+
+    Retorna dois dicts separados (demograficos, habitos) para preservar
+    a ordem original das colunas no CSV ao fazer o merge.
     """
-    # prevalencia de tabagismo no Brasil: ~22% (IBGE/PNS)
-    # prevalencia de atividade fisica regular: ~55%
-    # prevalencia de historico familiar cardiaco: ~25%
-    idade = random.randint(25, 85)
-    sexo = random.choice(["M", "F"])
-    tabagismo = random.random() < 0.22
-    atividade_fisica = random.random() < 0.55
-    historico_familiar = random.random() < 0.25
+    demograficos = {
+        "idade": random.randint(25, 85),
+        "sexo": random.choice(["M", "F"]),
+    }
+    habitos = {
+        "tabagismo": random.random() < 0.22,
+        "atividade_fisica": random.random() < 0.55,
+        "historico_familiar_cardiaco": random.random() < 0.25,
+    }
+    return demograficos, habitos
+
+
+def _clamp(valor, minimo, maximo):
+    """Restringe valor ao intervalo [minimo, maximo]."""
+    return max(minimo, min(maximo, valor))
+
+
+def _derivar_sinais_e_exames(demograficos: dict, habitos: dict) -> dict:
+    """Deriva sinais vitais e exames laboratoriais a partir do perfil base.
+
+    Aplica correlacoes clinicas entre variaveis:
+    idade -> pressao arterial, idade/tabagismo -> colesterol,
+    atividade fisica -> IMC/frequencia cardiaca, IMC -> glicemia.
+    """
+    idade = demograficos["idade"]
+    sexo = demograficos["sexo"]
+    tabagismo = habitos["tabagismo"]
+    atividade_fisica = habitos["atividade_fisica"]
 
     # a pressao sistolica sobe em media 0.6 mmHg por ano acima dos 25
     base_sistolica = 110 + (idade - 25) * 0.6
-    pressao_sistolica = int(random.gauss(base_sistolica, 15))
-    pressao_sistolica = max(90, min(200, pressao_sistolica))
-
-    pressao_diastolica = int(pressao_sistolica * random.gauss(0.62, 0.04))
-    pressao_diastolica = max(55, min(120, pressao_diastolica))
+    pressao_sistolica = _clamp(int(random.gauss(base_sistolica, 15)), 90, 200)
+    pressao_diastolica = _clamp(int(pressao_sistolica * random.gauss(0.62, 0.04)), 55, 120)
 
     # o colesterol total sobe em media 0.8 mg/dL por ano acima dos 25
     # o tabagismo adiciona 15 mg/dL ao valor basal
-    base_colesterol = 160 + (idade - 25) * 0.8
-    if tabagismo:
-        base_colesterol += 15
-    colesterol_total = int(random.gauss(base_colesterol, 30))
-    colesterol_total = max(120, min(350, colesterol_total))
-
-    colesterol_hdl = int(random.gauss(55 if sexo == "F" else 45, 12))
-    colesterol_hdl = max(20, min(100, colesterol_hdl))
-
-    colesterol_ldl = int(colesterol_total * random.gauss(0.6, 0.08))
-    colesterol_ldl = max(50, min(250, colesterol_ldl))
-
-    triglicerideos = int(random.gauss(150, 60))
-    triglicerideos = max(50, min(500, triglicerideos))
+    base_colesterol = 160 + (idade - 25) * 0.8 + (15 if tabagismo else 0)
+    colesterol_total = _clamp(int(random.gauss(base_colesterol, 30)), 120, 350)
+    colesterol_hdl = _clamp(int(random.gauss(55 if sexo == "F" else 45, 12)), 20, 100)
+    colesterol_ldl = _clamp(int(colesterol_total * random.gauss(0.6, 0.08)), 50, 250)
+    triglicerideos = _clamp(int(random.gauss(150, 60)), 50, 500)
 
     # o IMC basal cai de 29.0 para 26.5 em pacientes fisicamente ativos
     # a glicemia sobe 2.5 mg/dL por ponto de IMC acima de 22
-    imc = round(random.gauss(26.5 if atividade_fisica else 29.0, 4.5), 1)
-    imc = max(16.0, min(45.0, imc))
-
+    imc = _clamp(round(random.gauss(26.5 if atividade_fisica else 29.0, 4.5), 1), 16.0, 45.0)
     base_glicemia = 85 + (imc - 22) * 2.5
-    glicemia_jejum = int(random.gauss(base_glicemia, 15))
-    glicemia_jejum = max(65, min(300, glicemia_jejum))
-
-    diabetes = glicemia_jejum >= 126
+    glicemia_jejum = _clamp(int(random.gauss(base_glicemia, 15)), 65, 300)
 
     # pacientes ativos apresentam frequencia cardiaca basal menor (65 vs 75 bpm)
     base_fc = 65 if atividade_fisica else 75
-    frequencia_cardiaca = int(random.gauss(base_fc, 10))
-    frequencia_cardiaca = max(45, min(120, frequencia_cardiaca))
+    frequencia_cardiaca = _clamp(int(random.gauss(base_fc, 10)), 45, 120)
 
-    paciente = {
-        "id_paciente": paciente_id,
-        "idade": idade,
-        "sexo": sexo,
+    return {
         "pressao_arterial_sistolica": pressao_sistolica,
         "pressao_arterial_diastolica": pressao_diastolica,
         "colesterol_total": colesterol_total,
@@ -221,40 +220,55 @@ def gerar_paciente(paciente_id: int) -> dict:
         "colesterol_ldl": colesterol_ldl,
         "triglicerideos": triglicerideos,
         "glicemia_jejum": glicemia_jejum,
-        "diabetes": diabetes,
+        "diabetes": glicemia_jejum >= 126,
         "frequencia_cardiaca": frequencia_cardiaca,
         "imc": imc,
-        "tabagismo": tabagismo,
-        "atividade_fisica": atividade_fisica,
-        "historico_familiar_cardiaco": historico_familiar,
     }
 
-    # o risco acumulado define a probabilidade de doenca cardiaca
-    risco = calcular_risco(paciente)
-    doenca_cardiaca = random.random() < risco
 
-    # pacientes doentes recebem angina tipica com 45% de chance e 1-4 sintomas
-    # pacientes saudaveis recebem assintomatico com 55% de chance e 0-2 sintomas
-    if doenca_cardiaca:
-        tipo_dor = random.choices(
-            TIPOS_DOR_TORACICA, weights=[0.45, 0.30, 0.15, 0.10]
-        )[0]
-        num_sintomas = random.randint(1, 4)
-    else:
-        tipo_dor = random.choices(
-            TIPOS_DOR_TORACICA, weights=[0.05, 0.10, 0.30, 0.55]
-        )[0]
-        num_sintomas = random.randint(0, 2)
+# pesos de tipo de dor e faixa de sintomas por presenca/ausencia de doenca
+PERFIL_SINTOMAS = {
+    True:  {"pesos_dor": [0.45, 0.30, 0.15, 0.10], "sintomas_range": (1, 4)},
+    False: {"pesos_dor": [0.05, 0.10, 0.30, 0.55], "sintomas_range": (0, 2)},
+}
 
-    sintomas = random.sample(
-        SINTOMAS_POSSIVEIS, min(num_sintomas, len(SINTOMAS_POSSIVEIS))
-    )
 
-    paciente["tipo_dor_toracica"] = tipo_dor
-    paciente["sintomas"] = ";".join(sintomas) if sintomas else "nenhum"
-    paciente["doenca_cardiaca"] = doenca_cardiaca
+def _determinar_diagnostico(paciente: dict) -> dict:
+    """Determina doenca cardiaca e sintomas com base no risco acumulado.
 
-    return paciente
+    Pacientes doentes recebem angina tipica com 45% de chance e 1-4 sintomas.
+    Pacientes saudaveis recebem assintomatico com 55% de chance e 0-2 sintomas.
+    """
+    doenca_cardiaca = random.random() < calcular_risco(paciente)
+    perfil = PERFIL_SINTOMAS[doenca_cardiaca]
+
+    tipo_dor = random.choices(TIPOS_DOR_TORACICA, weights=perfil["pesos_dor"])[0]
+    num_sintomas = random.randint(*perfil["sintomas_range"])
+    sintomas = random.sample(SINTOMAS_POSSIVEIS, min(num_sintomas, len(SINTOMAS_POSSIVEIS)))
+
+    return {
+        "tipo_dor_toracica": tipo_dor,
+        "sintomas": ";".join(sintomas) if sintomas else "nenhum",
+        "doenca_cardiaca": doenca_cardiaca,
+    }
+
+
+def gerar_paciente(paciente_id: int) -> dict:
+    """Orquestra a geracao de um paciente em tres etapas.
+
+    1. Sorteia perfil demografico e habitos de vida
+    2. Deriva sinais vitais e exames laboratoriais com correlacoes clinicas
+    3. Determina doenca cardiaca e sintomas pelo risco acumulado
+    """
+    demograficos, habitos = _sortear_perfil_base()
+    exames = _derivar_sinais_e_exames(demograficos, habitos)
+
+    # a ordem do merge preserva a ordem original das colunas no CSV:
+    # demograficos -> exames -> habitos
+    paciente = {"id_paciente": paciente_id, **demograficos, **exames, **habitos}
+    diagnostico = _determinar_diagnostico(paciente)
+
+    return {**paciente, **diagnostico}
 
 
 def main():
