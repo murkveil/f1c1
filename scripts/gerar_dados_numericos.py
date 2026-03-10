@@ -95,6 +95,38 @@ TIPOS_DOR_TORACICA = [
 ]
 
 
+# cada tupla define (limiar, incremento) em ordem crescente de limiar.
+# bisect localiza a faixa do valor e retorna o incremento correspondente.
+FAIXAS_RISCO = {
+    "idade":                       [(40, 0.05), (50, 0.15), (65, 0.25)],
+    "pressao_arterial_sistolica":  [(130, 0.08), (140, 0.15)],
+    "colesterol_total":            [(200, 0.08), (240, 0.15)],
+    "glicemia_jejum":              [(100, 0.05), (126, 0.12)],
+    "imc":                         [(25, 0.05), (30, 0.10)],
+}
+
+# cada tupla define (campo, condicao_para_incremento, incremento)
+FATORES_BOOLEANOS = [
+    ("sexo",                        lambda v: v == "M",  0.05),
+    ("colesterol_hdl",              lambda v: v < 40,    0.10),
+    ("tabagismo",                   lambda v: v,         0.15),
+    ("atividade_fisica",            lambda v: not v,     0.05),
+    ("historico_familiar_cardiaco", lambda v: v,         0.10),
+]
+
+RISCO_BASAL = 0.05
+RISCO_TETO = 0.95
+
+
+def _incremento_por_faixa(valor: float, faixas: list[tuple[float, float]]) -> float:
+    """Retorna o incremento da faixa mais alta que o valor atinge."""
+    incremento = 0.0
+    for limiar, inc in faixas:
+        if valor >= limiar:
+            incremento = inc
+    return incremento
+
+
 def calcular_risco(paciente: dict) -> float:
     """Acumula incrementos de probabilidade para cada fator de risco presente.
 
@@ -102,52 +134,20 @@ def calcular_risco(paciente: dict) -> float:
     O risco total nunca ultrapassa 0.95. A funcao retorna a probabilidade
     final que o gerador utiliza para determinar a presenca de doenca cardiaca.
     """
-    risco = 0.05
+    risco = RISCO_BASAL
 
-    idade = paciente["idade"]
-    if idade >= 65:
-        risco += 0.25
-    elif idade >= 50:
-        risco += 0.15
-    elif idade >= 40:
-        risco += 0.05
+    risco += sum(
+        _incremento_por_faixa(paciente[campo], faixas)
+        for campo, faixas in FAIXAS_RISCO.items()
+    )
 
-    if paciente["sexo"] == "M":
-        risco += 0.05
+    risco += sum(
+        incremento
+        for campo, condicao, incremento in FATORES_BOOLEANOS
+        if condicao(paciente[campo])
+    )
 
-    if paciente["pressao_arterial_sistolica"] >= 140:
-        risco += 0.15
-    elif paciente["pressao_arterial_sistolica"] >= 130:
-        risco += 0.08
-
-    if paciente["colesterol_total"] >= 240:
-        risco += 0.15
-    elif paciente["colesterol_total"] >= 200:
-        risco += 0.08
-
-    if paciente["colesterol_hdl"] < 40:
-        risco += 0.10
-
-    if paciente["glicemia_jejum"] >= 126:
-        risco += 0.12
-    elif paciente["glicemia_jejum"] >= 100:
-        risco += 0.05
-
-    if paciente["tabagismo"]:
-        risco += 0.15
-
-    if paciente["imc"] >= 30:
-        risco += 0.10
-    elif paciente["imc"] >= 25:
-        risco += 0.05
-
-    if not paciente["atividade_fisica"]:
-        risco += 0.05
-
-    if paciente["historico_familiar_cardiaco"]:
-        risco += 0.10
-
-    return min(risco, 0.95)
+    return min(risco, RISCO_TETO)
 
 
 def gerar_paciente(paciente_id: int) -> dict:
