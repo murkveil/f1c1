@@ -96,7 +96,7 @@ TIPOS_DOR_TORACICA = [
 
 
 # cada tupla define (limiar, incremento) em ordem crescente de limiar.
-# bisect localiza a faixa do valor e retorna o incremento correspondente.
+# a iteração retorna o incremento da faixa mais alta que o valor atinge.
 FAIXAS_RISCO = {
     "idade":                       [(40, 0.05), (50, 0.15), (65, 0.25)],
     "pressao_arterial_sistolica":  [(130, 0.08), (140, 0.15)],
