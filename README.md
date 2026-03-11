@@ -42,6 +42,8 @@ f1c1/
 |   |   |-- massa_et_al_2019_prevalencia_dcv_idosos.txt
 |   |   |-- bonotto_et_al_2016_fatores_risco_dcv_mulheres.txt
 |   |-- visuais/                        # Parte 3 - imagens de exames (.jpg/.png)
+|   |   |-- ecg/                       # eletrocardiogramas (.png)
+|   |   |-- raio_x_toracico/           # raio-X de torax (.jpeg/.jpg/.png)
 |-- scripts/
 |   |-- gerar_dados_numericos.py        # gerador do dataset sintético
 |-- notebooks/                          # (futuro) notebooks Colab/Jupyter
@@ -196,5 +198,58 @@ A aplicação de NLP em textos médicos cardiovasculares contribui diretamente p
 
 ## Parte 3 - Dados Visuais (VC)
 
-Status: pendente.
+### Objetivo
+
+Selecionar imagens de exames cardiológicos para alimentar futuros algoritmos de Visão Computacional (VC) do projeto CardioIA.
+
+### Imagens selecionadas
+
+O diretório [`data/visuais/`](data/visuais/) contém 100 imagens organizadas em duas categorias de exames cardiológicos:
+
+#### ECG - Eletrocardiogramas (50 imagens)
+
+| Metadado | Valor |
+|----------|-------|
+| Diretório | [`data/visuais/ecg/`](data/visuais/ecg/) |
+| Formato | PNG |
+| Origem | Kaggle - [ECG Dataset](https://www.kaggle.com/datasets/ankurray00/ecg-dataset) |
+| Licença | CC-BY-NC-SA-4.0 |
+| Classes | Normal Person (17), Abnormal Heartbeat (17), History of MI (16) |
+
+As imagens representam traçados de eletrocardiograma de 12 derivações, o exame mais utilizado na prática cardiológica para detecção de arritmias, isquemia miocárdica e infarto. A distribuição balanceada entre as três classes permite treinar modelos de classificação sem viés significativo.
+
+#### Raio-X torácico (50 imagens)
+
+| Metadado | Valor |
+|----------|-------|
+| Diretório | [`data/visuais/raio_x_toracico/`](data/visuais/raio_x_toracico/) |
+| Formato | JPEG/JPG/PNG |
+| Origem | Kaggle - [COVID-19 Xray Dataset](https://www.kaggle.com/datasets/khoongweihao/covid19-xray-dataset-train-test-sets) |
+| Licença | CC0-1.0 (domínio público) |
+| Classes | Normal (25), Pneumonia (25) |
+
+As imagens de raio-X torácico posteroanterior (PA) permitem visualizar a silhueta cardíaca, campos pulmonares e estruturas mediastinais. Alterações como cardiomegalia, congestão pulmonar e derrame pleural são indicadores visuais de insuficiência cardíaca e outras cardiopatias. A classificação entre Normal e Pneumonia exercita técnicas fundamentais de visão computacional aplicáveis a qualquer tarefa de diagnóstico por imagem.
+
+### Como algoritmos de Visão Computacional podem explorar as imagens
+
+As imagens selecionadas oferecem conteúdo para múltiplas técnicas de VC:
+
+- **Classificação de imagens** - modelos como ResNet, EfficientNet e Vision Transformers (ViT) podem classificar ECGs em normal, arritmia e infarto, ou raios-X em normal e patológico. Essa tarefa é a base da triagem automatizada em cardiologia.
+
+- **Detecção de anomalias** - algoritmos de detecção de anomalias podem identificar padrões atípicos nos traçados de ECG ou nas radiografias, sinalizando casos que requerem avaliação médica urgente.
+
+- **Segmentação** - redes como U-Net podem segmentar a silhueta cardíaca em raios-X torácicos para calcular o índice cardiotorácico (ICT), métrica utilizada no diagnóstico de cardiomegalia.
+
+- **Transfer learning** - modelos pré-treinados em grandes datasets de imagens médicas (como CheXNet) podem ser refinados com estas imagens para tarefas específicas do CardioIA, reduzindo a necessidade de grandes volumes de dados de treino.
+
+- **Aumento de dados (data augmentation)** - técnicas como rotação, espelhamento, ajuste de brilho e contraste podem expandir o dataset de 100 imagens para milhares de amostras de treino, melhorando a generalização dos modelos.
+
+### Relevância para IA aplicada à saúde
+
+A aplicação de Visão Computacional em imagens cardiológicas contribui diretamente para:
+
+- Automatizar a triagem de ECGs em unidades de emergência, priorizando pacientes com alterações críticas
+- Apoiar o diagnóstico de cardiomegalia e insuficiência cardíaca por meio da análise automatizada de raios-X torácicos
+- Reduzir o tempo de interpretação de exames em regiões com escassez de cardiologistas especializados
+- Integrar com os módulos de dados numéricos e textuais do CardioIA para um sistema de apoio à decisão clínica multimodal
 
