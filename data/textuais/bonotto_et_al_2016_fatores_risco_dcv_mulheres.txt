@@ -1,0 +1,174 @@
+================================================================================
+METADADOS
+================================================================================
+
+Título: Conhecimento dos fatores de risco modificáveis para doença
+        cardiovascular entre mulheres e seus fatores associados: um estudo de
+        base populacional
+Autores: Gabriel Missaggia Bonotto, Raul Andres Mendoza-Sassi,
+         Lulie Rosane Odeh Susin
+Periódico: Ciência & Saúde Coletiva
+Volume: 21
+Número: 1
+Páginas: 293-302
+Ano: 2016
+DOI: https://doi.org/10.1590/1413-81232015211.07232015
+ISSN: 1678-4561
+Palavras-chave: Conhecimento; Conhecimentos, atitudes e práticas em saúde;
+                Fatores de risco; Doenças cardiovasculares; Mulheres
+URL: https://www.scielo.br/j/csc/a/Smt5y5xfY9Yvws8CxPsKMpg/?lang=pt
+PDF: https://www.scielo.br/j/csc/a/Smt5y5xfY9Yvws8CxPsKMpg/?format=pdf&lang=pt
+Licença: Creative Commons (acesso aberto via SciELO)
+
+================================================================================
+TEXTO COMPLETO
+================================================================================
+
+
+RESUMO
+
+O estudo avaliou o conhecimento sobre fatores de risco modificáveis para doença
+cardiovascular (DCV) entre mulheres residentes em Rio Grande, Rio Grande do Sul.
+Realizado como pesquisa transversal de base populacional, incluiu 1.593 mulheres
+com 18 anos ou mais. Os resultados mostraram que apenas 33% conheciam três ou
+mais dos sete fatores de risco pesquisados.
+
+
+INTRODUÇÃO
+
+As doenças crônicas não transmissíveis representam grave problema de saúde
+pública, responsáveis por 72% das mortes no Brasil. A DCV destaca-se como
+principal causa de morte e incapacidade, acarretando mais de sete milhões de
+óbitos anuais mundialmente.
+
+A mudança comportamental para prevenir essas doenças requer que as pessoas
+identifiquem os fatores de risco relacionados. Muitos desses fatores
+relacionam-se ao estilo de vida e são modificáveis através de ações educativas
+focando atividade física, dieta saudável, cessação do tabagismo e controle de
+hipertensão e diabetes.
+
+Estudos internacionais apontam que o conhecimento sobre fatores de risco
+cardiovascular é escasso, associado a questões socioeconômicas. Pesquisas
+brasileiras confirmam essa tendência. Diferenças de gênero existem na
+prevalência desses fatores, com taxas mais elevadas entre mulheres.
+
+
+MÉTODOS
+
+Desenho e Local: Estudo transversal de base populacional na zona urbana de Rio
+Grande, realizado de abril a novembro de 2011.
+
+População: Mulheres com 18 anos ou mais residentes na área urbana, excluindo
+aquelas incapacitadas mentalmente.
+
+Tamanho da Amostra: Calculado em 1.582 mulheres, considerando risco relativo de
+2,0, confiança de 95% e poder de 80%. Visitaram-se 1.400 residências em 50
+setores censitários sorteados.
+
+Coleta de Dados: Questionário pré-codificado aplicado por seis entrevistadoras
+treinadas. A pergunta principal era: "Você poderia me dizer o que pode levar à
+angina ou ao infarto?" Os respondentes mencionavam espontaneamente os fatores,
+sem sugestão de opções.
+
+Desfecho: Conhecimento de três ou mais dos sete fatores de risco pesquisados
+(percentil 75): obesidade, tabagismo, pressão alta, diabetes, sedentarismo,
+estresse e ingestão de alimentos com gordura.
+
+Variáveis Independentes:
+- Demográficas: idade, situação conjugal, cor da pele
+- Socioeconômicas: escolaridade, renda per capita
+- Comportamentais: tabagismo, uso de álcool, sedentarismo
+- Clínicas: doença cardiovascular, diabetes mellitus, hipertensão arterial
+
+Análise: Descritiva, bivariada e multivariável por Regressão de Poisson com
+variância robusta, seguindo modelo hierárquico com três níveis de determinação.
+
+
+RESULTADOS
+
+Características da Amostra (n=1.593):
+- Idade média: 44,6 anos (DP=17,8)
+- 70,8% de cor de pele branca
+- 54,4% viviam sem cônjuge
+- 61% com ensino médio incompleto
+- 27,3% tabagistas
+- 37,4% sedentárias
+- 30,6% com hipertensão arterial
+
+Conhecimento dos Fatores de Risco:
+- Pressão alta: 50,8%
+- Tabagismo: 47,8%
+- Alimentos gordurosos: 33,6%
+- Estresse: 29,3%
+- Sedentarismo: 20,8%
+- Obesidade: 14,9%
+- Diabetes: 6,4%
+- Nenhum fator: 11%
+
+Desfecho Principal: 33% (IC95%: 31,0%-35,6%) conheciam três ou mais fatores.
+
+Análise Multivariada - Fatores Associados ao Maior Conhecimento:
+- Idade 25-44 anos: 36% maior probabilidade (RP=1,36)
+- Cor de pele não branca: RP=1,18
+- Ensino médio completo: 28% maior probabilidade (RP=1,28)
+- Renda: Tendência linear crescente, com 4o quartil apresentando três vezes
+  maior probabilidade que 1o (RP=2,97)
+- Portadora de DCV: 50% maior probabilidade (RP=1,50)
+
+Fatores Associados ao Menor Conhecimento:
+- Sedentarismo: 17% redução no conhecimento (RP=0,83)
+
+
+DISCUSSÃO
+
+A prevalência de 33% de mulheres conhecendo três ou mais fatores de risco está
+abaixo de estudos internacionais (42-41%), explicado pelo método de resposta
+espontânea versus estimulada e diferenças populacionais.
+
+A pressão alta e tabagismo foram os fatores mais reconhecidos, resultado
+consistente com outras pesquisas. Isso reflete ênfase das campanhas públicas
+brasileiras sobre esses riscos.
+
+Merece atenção a ausência de conhecimento: 94% desconheciam diabetes como fator
+de risco para DCV, 85% desconheciam obesidade. Essa falta de conhecimento pode
+resultar de não percepção que uma doença crônica também funciona como fator de
+risco para outra.
+
+Iniquidade Social: O estudo evidenciou importante iniquidade no conhecimento
+segundo renda e escolaridade. A renda mostrou efeito mais pronunciado (3 vezes)
+que escolaridade (28%), sugerindo que a barreira principal seja acesso financeiro
+à informação de qualidade, não apenas educação formal.
+
+Idade: Adultos jovens e maduros (25-64 anos) apresentaram maior conhecimento,
+explicado pela incidência crescente de DCV nessas faixas etárias, gerando maior
+preocupação e informação.
+
+Atividade Física: Aproximadamente 80% não identificaram relação entre exercício
+e DCV, destacando lacuna importante no conhecimento sobre prevenção.
+
+Limitações do Estudo:
+- Desenho transversal não permite causalidade
+- Restrito a mulheres, não extrapolável para homens
+- Cor da pele identificada por entrevistador, não autodeclarada (possível viés)
+- Morbidades autorreferidas podem ter viés de colisão
+- Resposta espontânea pode subestimar conhecimento
+
+Pontos Fortes:
+- Baixa taxa de perdas (2%)
+- Método de resposta espontânea reflete conhecimento real da população
+
+
+CONCLUSÃO
+
+O conhecimento dos fatores de risco modificáveis para DCV entre mulheres é baixo
+(33% conhecem três ou mais fatores) e distribuído desigualmente segundo renda e
+escolaridade, evidenciando iniquidade em saúde.
+
+Os achados indicam necessidade de intensificar programas de educação em saúde,
+particularmente dirigidos a mulheres de menor renda e escolaridade. As unidades
+básicas de saúde e Estratégia Saúde da Família podem desempenhar papel
+fundamental nessa difusão de conhecimento.
+
+A melhoria na conscientização populacional sobre comportamentos e fatores de
+risco pode levar a comportamentos preventivos adequados, reduzindo carga de
+morbidade e mortalidade por DCV em todas as camadas sociais.

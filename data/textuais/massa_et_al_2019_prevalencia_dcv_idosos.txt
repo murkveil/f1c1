@@ -1,0 +1,174 @@
+================================================================================
+METADADOS
+================================================================================
+
+Título: Análise da prevalência de doenças cardiovasculares e fatores associados
+        em idosos, 2000-2010
+Autores: Kaio Henrique Correa Massa, Yeda Aparecida Oliveira Duarte,
+         Alexandre Dias Porto Chiavegatto Filho
+Periódico: Ciência & Saúde Coletiva
+Volume: 24
+Número: 1
+Páginas: 105-114
+Ano: 2019
+DOI: https://doi.org/10.1590/1413-81232018241.02072017
+ISSN: 1678-4561
+Palavras-chave: Doenças cardiovasculares; Epidemiologia; Idoso; Doença crônica
+URL: https://www.scielo.br/j/csc/a/9mjfHq4BdxPZgdPLNq9x5Rw/?lang=pt
+PDF: https://www.scielo.br/j/csc/a/9mjfHq4BdxPZgdPLNq9x5Rw/?format=pdf&lang=pt
+Licença: Creative Commons (acesso aberto via SciELO)
+
+================================================================================
+TEXTO COMPLETO
+================================================================================
+
+
+RESUMO
+
+O estudo examinou mudanças na prevalência de doença cardiovascular (DCV) entre
+idosos de São Paulo durante 2000-2010. Pesquisadores utilizaram dados do Estudo
+SABE, aplicando modelos multinível bayesianos e regressão logística. Os
+resultados mostram aumento na prevalência de DCV: 17,9% (2000), 22,2% (2006) e
+22,9% (2010). Após ajuste estatístico, o aumento permaneceu significativo em
+2006 (OR=3,20) e 2010 (OR=2,98). Fatores associados incluem idade avançada,
+histórico de tabagismo, diabetes e hipertensão. Ingestão de álcool apresentou
+associação inversa com DCV.
+
+
+INTRODUÇÃO
+
+O aumento de anos vividos com doenças crônicas representa preocupação central em
+saúde pública. As doenças cardiovasculares constituem responsável significativa
+por incapacidade em idosos. Segundo a Organização Mundial de Saúde, observa-se
+aumento recente na carga de doenças cardiovasculares, principalmente em países
+de baixa e média rendas, refletindo maior expectativa de vida e exposição
+prolongada a fatores de risco.
+
+No Brasil, as doenças cardiovasculares são responsáveis por 27,7% dos óbitos,
+sendo principal causa de morte. Embora mortalidade tenha diminuído, a morbidade
+permanece crescente, impactando significativamente custos hospitalares.
+
+
+METODOLOGIA
+
+O estudo integra o projeto SABE (Estudo de Saúde, Bem-Estar e Envelhecimento),
+pesquisa de múltiplas coortes com amostras representativas de idosos residentes
+em São Paulo, coletadas em 2000, 2006 e 2010.
+
+Amostra: 2.143 indivíduos (2000), 1.413 (2006) e 1.333 (2010), com idade maior
+ou igual a 60 anos, ambos os sexos.
+
+Coleta de dados: Entrevistas domiciliares utilizando questionário abrangendo
+dados pessoais, condições de saúde, antropometria, estado funcional,
+medicamentos, história laboral e características de moradia.
+
+Variável dependente: Presença de doença cardiovascular, obtida mediante pergunta
+sobre diagnóstico médico de ataque cardíaco, doença coronária, angina ou
+problemas cardíacos.
+
+Variáveis independentes:
+- Demográficas: sexo, idade (categorizada), cor de pele
+- Socioeconômicas: escolaridade, renda per capita, situação marital
+- Comportamentais: consumo de álcool (recordatório 3 meses), tabagismo (nunca
+  fumou/já fumou/fuma atualmente), IMC
+- Comorbidades: diabetes tipo 2, hipertensão arterial (autorrelato)
+
+Análise estatística: Modelos de regressão logística para períodos separados
+(2000, 2006, 2010); modelo de regressão logística multinível para análise
+agregada considerando estrutura longitudinal. Inferência bayesiana utilizada para
+diminuir viés em análises multinível com variáveis dicotômicas. Teste VIF
+verificou ausência de multicolinearidade.
+
+
+RESULTADOS
+
+Distribuição demográfica: Maioria feminina (58,8%-59,9%). Predominância de cor
+de pele branca (70,4% em 2000, diminuindo para 58,7% em 2010). Escolaridade
+aumentou ao longo do período.
+
+Características comportamentais: Cerca de 70% não ingeriram álcool nos três
+meses precedentes. Maioria nunca fumou, com diminuição de fumantes atuais
+(15,8%-12,0%). Aumento importante de sobrepeso (40,9%-55,1%).
+
+Prevalência de morbidades:
+- Diabetes: 16,7% (2000), 21,1% (2006), 25,2% (2010)
+- Hipertensão: 53,1% (2000), 62,7% (2006), 66,8% (2010)
+- Doenças cardiovasculares: 17,9% (2000), 22,2% (2006), 22,9% (2010)
+
+Análises de regressão (2000, 2006, 2010 separadamente):
+
+Associações estatisticamente significativas observadas com:
+- Idade: Progressivo aumento de DCV em faixas etárias superiores
+- Álcool: Associação inversa (2000: OR=0,63; 2010: OR=0,68)
+- Tabagismo: Histórico associado a maior chance de DCV (2000: OR=1,45; 2010:
+  OR=1,49)
+- Diabetes: Associação significativa em 2006 (OR=1,58) e 2010 (OR=1,90)
+- Hipertensão: Aumentou chances nos três períodos (OR=2,80 em 2000; OR=2,92 em
+  2006; OR=2,22 em 2010)
+- Situação marital: Viver sem companheiro associado a menor chance apenas em
+  2010 (OR=0,66)
+
+Análise multinível agregada:
+
+Comparado a 2000, aumento significativo em 2006 (OR=3,20) e 2010 (OR=2,98),
+mesmo após ajuste para variáveis individuais. Entre 2006 e 2010, não houve
+diferença significativa após ajuste.
+
+
+DISCUSSÃO
+
+O estudo demonstra aumento estatisticamente significante na prevalência de DCV
+entre idosos (2000-2010), persistindo mesmo após ajuste para variáveis
+socioeconômicas e fatores de risco.
+
+Envelhecimento e DCV: A associação entre idade avançada e DCV foi consistente,
+refletindo naturalmente um maior período de exposição a fatores de risco para
+DCNT. Necessidade de planejamento específico para população envelhecida.
+
+Escolaridade: Aumento observado reflete transformações socioeconômicas. Embora
+não associada significativamente a DCV neste estudo, educação inferior
+correlaciona-se com pior percepção de saúde e maior prevalência de doenças
+crônicas.
+
+Fatores comportamentais: O consumo de álcool mostrou associação inversa,
+alinhando-se com estudos que descrevem benefícios cardiovasculares de ingestão
+leve-moderada. Entretanto, ressalta-se impossibilidade de estabelecer
+causalidade.
+
+Tabagismo: Histórico associado a DCV, mas não tabagismo atual, sugerindo
+possível menor procura por diagnósticos entre fumadores.
+
+Obesidade: Aumento de sobrepeso observado (fenômeno mundial), porém sem
+associação significativa neste estudo, contrariamente à literatura estabelecida
+sobre riscos cardiovasculares.
+
+Comorbidades: Diabetes e hipertensão apresentaram associação estatisticamente
+significativa com doenças cardiovasculares em idosos. Controle dessas condições
+crucial para reduzir carga cardiovascular, especialmente considerando
+desigualdades em São Paulo.
+
+Comparações com literatura: Prevalência inicial (2000) similar a estudos
+anteriores. Ausência de diferenças significativas entre 2006 e 2010 alinha-se
+com análises de morbidade por doenças crônicas na população idosa brasileira.
+
+Perspectivas futuras: Embora mortalidade cardiovascular tenha diminuído, a
+morbidade permanece crescente preocupação em saúde pública. Aumento geral
+observado representa importante desafio, principalmente considerando
+envelhecimento acelerado populacional brasileiro.
+
+
+LIMITAÇÕES
+
+1. Coleta de dados por entrevista susceptível a vieses de memória em idosos
+2. Delineamento seriado impossibilita identificação de efeitos causais
+3. Atividade física não coletada sistematicamente em todas as ondas
+4. Consumo de álcool baseado em autorrelato sem quantificação específica
+
+
+CONCLUSÃO
+
+O estudo evidencia aumento significativo na morbidade por doenças
+cardiovasculares em idosos paulistas (2000-2010). Fatores de risco modificáveis
+demonstram importância relevante. Resultados sugerem necessidade de
+intensificação de políticas de cuidado à saúde do idoso, com ênfase em controle
+e prevenção da principal causa de mortalidade nessa população.
