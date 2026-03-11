@@ -8,6 +8,8 @@ Diretório central de dados do projeto CardioIA. Armazena todos os datasets que 
 data/
 |-- numericos/          # Parte 1 - datasets tabulares (.csv)
 |-- textuais/           # Parte 2 - textos médicos (.txt)
+|   |-- massa_et_al_2019_prevalencia_dcv_idosos.txt
+|   |-- bonotto_et_al_2016_fatores_risco_dcv_mulheres.txt
 |-- visuais/            # Parte 3 - imagens de exames cardiológicos (.jpg/.png)
 ```
 
@@ -160,9 +162,56 @@ python scripts/gerar_dados_numericos.py
 
 ## textuais/
 
-Reservado para a Parte 2 (Dados Textuais/NLP) do projeto. Este diretório armazena textos médicos em formato `.txt` relacionados a doenças cardíacas, saúde pública, sintomas e tratamentos.
+Contém papers científicos em formato `.txt` para a Parte 2 (Dados Textuais/NLP) do projeto. Os textos são artigos revisados por pares publicados no periódico Ciência & Saúde Coletiva com acesso aberto via SciELO (licença Creative Commons).
 
-Status: pendente.
+### massa_et_al_2019_prevalencia_dcv_idosos.txt
+
+| Metadado | Valor |
+|----------|-------|
+| Título | Análise da prevalência de doenças cardiovasculares e fatores associados em idosos, 2000-2010 |
+| Autores | Kaio Henrique Correa Massa, Yeda Aparecida Oliveira Duarte, Alexandre Dias Porto Chiavegatto Filho |
+| Periódico | Ciência & Saúde Coletiva |
+| Volume/Número/Páginas | v.24, n.1, p.105-114 |
+| Ano | 2019 |
+| DOI | [10.1590/1413-81232018241.02072017](https://doi.org/10.1590/1413-81232018241.02072017) |
+| ISSN | 1678-4561 |
+| Palavras-chave | Doenças cardiovasculares; Epidemiologia; Idoso; Doença crônica |
+| URL | [SciELO](https://www.scielo.br/j/csc/a/9mjfHq4BdxPZgdPLNq9x5Rw/?lang=pt) |
+| PDF | [Download](https://www.scielo.br/j/csc/a/9mjfHq4BdxPZgdPLNq9x5Rw/?format=pdf&lang=pt) |
+| Licença | Creative Commons (acesso aberto via SciELO) |
+
+O paper utiliza dados do Estudo SABE para analisar a mudança na prevalência de doença cardiovascular entre idosos de São Paulo no período de 2000 a 2010. Aplica modelos multinível bayesianos e regressão logística, identificando aumento significativo na prevalência (de 17,9% para 22,9%) e associações com idade avançada, histórico de tabagismo, diabetes e hipertensão.
+
+Relevância para NLP: o texto contém terminologia epidemiológica densa, dados estatísticos estruturados (odds ratios, intervalos de confiança), descrições de fatores de risco e relações causais entre variáveis clínicas — conteúdo ideal para extração de entidades clínicas, mapeamento de relações causais e classificação de tópicos médicos.
+
+### bonotto_et_al_2016_fatores_risco_dcv_mulheres.txt
+
+| Metadado | Valor |
+|----------|-------|
+| Título | Conhecimento dos fatores de risco modificáveis para doença cardiovascular entre mulheres e seus fatores associados: um estudo de base populacional |
+| Autores | Gabriel Missaggia Bonotto, Raul Andres Mendoza-Sassi, Lulie Rosane Odeh Susin |
+| Periódico | Ciência & Saúde Coletiva |
+| Volume/Número/Páginas | v.21, n.1, p.293-302 |
+| Ano | 2016 |
+| DOI | [10.1590/1413-81232015211.07232015](https://doi.org/10.1590/1413-81232015211.07232015) |
+| ISSN | 1678-4561 |
+| Palavras-chave | Conhecimento; Conhecimentos, atitudes e práticas em saúde; Fatores de risco; Doenças cardiovasculares; Mulheres |
+| URL | [SciELO](https://www.scielo.br/j/csc/a/Smt5y5xfY9Yvws8CxPsKMpg/?lang=pt) |
+| PDF | [Download](https://www.scielo.br/j/csc/a/Smt5y5xfY9Yvws8CxPsKMpg/?format=pdf&lang=pt) |
+| Licença | Creative Commons (acesso aberto via SciELO) |
+
+O paper avalia o nível de conhecimento de 1.593 mulheres sobre fatores de risco cardiovascular modificáveis em Rio Grande (RS). Revela que apenas 33% conheciam três ou mais dos sete fatores de risco pesquisados, com iniquidade significativa associada a menor escolaridade e renda familiar.
+
+Relevância para NLP: o texto aborda percepção populacional sobre saúde cardiovascular, contendo vocabulário de saúde pública, descrições de fatores de risco em linguagem acessível e análises de iniquidade social — conteúdo relevante para análise de sentimento, extração de sintomas mencionados espontaneamente e classificação de nível de conhecimento em saúde.
+
+### Formato dos arquivos
+
+Cada arquivo `.txt` segue a mesma estrutura:
+
+1. Cabeçalho de metadados (título, autores, DOI, ISSN, URLs, licença)
+2. Texto completo organizado por seções (resumo, introdução, metodologia, resultados, discussão, limitações, conclusão)
+
+Essa estrutura facilita o pré-processamento por pipelines de NLP, permitindo segmentação automática por seções e extração de metadados via parsing do cabeçalho.
 
 ---
 
