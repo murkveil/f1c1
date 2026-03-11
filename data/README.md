@@ -11,6 +11,8 @@ data/
 |   |-- massa_et_al_2019_prevalencia_dcv_idosos.txt
 |   |-- bonotto_et_al_2016_fatores_risco_dcv_mulheres.txt
 |-- visuais/            # Parte 3 - imagens de exames cardiológicos (.jpg/.png)
+|   |-- ecg/           # eletrocardiogramas (.png)
+|   |-- raio_x_toracico/  # raio-X de torax (.jpeg/.jpg/.png)
 ```
 
 ## Por que `data/` e não `docs/` ou `assets/`?
@@ -217,6 +219,99 @@ Essa estrutura facilita o pré-processamento por pipelines de NLP, permitindo se
 
 ## visuais/
 
-Reservado para a Parte 3 (Dados Visuais/VC) do projeto. Este diretório armazena imagens de exames cardiológicos (ECGs, angiogramas, raio-X torácico) em formato `.jpg` ou `.png`.
+Contém imagens de exames cardiológicos para a Parte 3 (Dados Visuais/VC) do projeto. As imagens foram obtidas de datasets públicos do Kaggle e renomeadas com padrão descritivo para facilitar o carregamento por pipelines de Visão Computacional.
 
-Status: pendente.
+### ecg/
+
+Imagens de eletrocardiogramas (ECG) de 12 derivações em formato PNG.
+
+| Metadado | Valor |
+|----------|-------|
+| Diretório | `data/visuais/ecg/` |
+| Total de imagens | 50 |
+| Formato | PNG |
+| Origem | Kaggle - [ECG Dataset](https://www.kaggle.com/datasets/ankurray00/ecg-dataset) (ankurray00) |
+| Licença | CC-BY-NC-SA-4.0 |
+
+#### Distribuição por classe
+
+| Classe | Prefixo | Quantidade | Descrição |
+|--------|---------|------------|-----------|
+| Normal | `ecg_normal_` | 17 | ECG de paciente saudável, sem alterações de ritmo ou morfologia |
+| Arritmia | `ecg_arritmia_` | 17 | ECG com batimento cardíaco anormal (Abnormal Heartbeat) |
+| Infarto | `ecg_infarto_` | 16 | ECG com histórico de infarto do miocárdio (History of MI) |
+
+#### Convenção de nomes
+
+Os arquivos originais seguiam o padrão do dataset Kaggle (`Normal(25).png`, `HB_(120).png`, `PMI_(102).png`). Foram renomeados para o padrão `ecg_{classe}_{NNN}.png` onde `{classe}` indica o diagnóstico em pt-BR e `{NNN}` é a numeração sequencial com zero-padding.
+
+| Nome original | Nome renomeado | Classe |
+|---------------|----------------|--------|
+| `Normal(*)` | `ecg_normal_001.png` ... `ecg_normal_017.png` | Normal Person |
+| `HB_(*)` | `ecg_arritmia_001.png` ... `ecg_arritmia_017.png` | Abnormal Heartbeat |
+| `PMI_(*)` | `ecg_infarto_001.png` ... `ecg_infarto_016.png` | History of MI |
+
+#### Relevância clínica
+
+O eletrocardiograma é o exame complementar mais solicitado na prática cardiológica. A interpretação automatizada de ECGs por algoritmos de Visão Computacional pode:
+
+- Detectar arritmias em tempo real em dispositivos de monitoramento contínuo (IoT)
+- Identificar sinais precoces de infarto agudo do miocárdio em unidades de emergência
+- Auxiliar na triagem de pacientes em regiões com escassez de cardiologistas
+
+As três classes presentes no dataset (normal, arritmia, infarto) representam os diagnósticos mais frequentes e clinicamente relevantes na eletrocardiografia, permitindo treinar modelos de classificação multiclasse.
+
+### raio_x_toracico/
+
+Imagens de raio-X torácico posteroanterior (PA) em formatos JPEG, JPG e PNG.
+
+| Metadado | Valor |
+|----------|-------|
+| Diretório | `data/visuais/raio_x_toracico/` |
+| Total de imagens | 50 |
+| Formatos | JPEG, JPG, PNG |
+| Origem | Kaggle - [COVID-19 Xray Dataset](https://www.kaggle.com/datasets/khoongweihao/covid19-xray-dataset-train-test-sets) (khoongweihao) |
+| Licença | CC0-1.0 (domínio público) |
+
+#### Distribuição por classe
+
+| Classe | Prefixo | Quantidade | Descrição |
+|--------|---------|------------|-----------|
+| Normal | `rx_normal_` | 25 | Raio-X torácico sem achados patológicos |
+| Pneumonia | `rx_pneumonia_` | 25 | Raio-X torácico com pneumonia |
+
+#### Convenção de nomes
+
+Os arquivos originais possuíam nomes não descritivos (UUIDs, referências de artigos). Foram renomeados para o padrão `rx_{classe}_{NNN}.{ext}` onde `{classe}` indica o diagnóstico, `{NNN}` é a numeração sequencial com zero-padding e `{ext}` é a extensão original preservada.
+
+| Diretório de origem | Nome renomeado | Classe |
+|---------------------|----------------|--------|
+| `train/NORMAL/` | `rx_normal_001` ... `rx_normal_025` | Normal |
+| `train/PNEUMONIA/` | `rx_pneumonia_001` ... `rx_pneumonia_025` | Pneumonia |
+
+#### Relevância clínica
+
+O raio-X torácico é o exame de imagem mais acessível e frequente na avaliação cardiopulmonar. A análise automatizada de radiografias torácicas pode:
+
+- Detectar cardiomegalia pela medição do índice cardiotorácico (ICT) via segmentação da silhueta cardíaca
+- Identificar congestão pulmonar e derrame pleural, sinais de insuficiência cardíaca descompensada
+- Classificar padrões de opacidade pulmonar para diagnóstico diferencial entre causas cardíacas e infecciosas
+
+A distinção entre raios-X normais e com pneumonia exercita técnicas fundamentais de classificação binária de imagens, aplicáveis a qualquer tarefa de diagnóstico por imagem na cardiologia.
+
+### Nomenclatura padronizada
+
+Ambos os subdiretórios seguem o mesmo padrão de nomenclatura:
+
+```
+{tipo_exame}_{classe}_{NNN}.{ext}
+```
+
+| Componente | Descrição | Exemplos |
+|------------|-----------|----------|
+| `tipo_exame` | Tipo do exame cardiológico | `ecg`, `rx` |
+| `classe` | Diagnóstico clínico em pt-BR | `normal`, `arritmia`, `infarto`, `pneumonia` |
+| `NNN` | Numeração sequencial com zero-padding | `001`, `002`, ..., `025` |
+| `ext` | Extensão original do arquivo | `png`, `jpeg`, `jpg` |
+
+Essa padronização permite que pipelines de VC extraiam automaticamente a classe (label) a partir do nome do arquivo via parsing de string, eliminando a necessidade de arquivos de anotação externos para tarefas de classificação supervisionada.
