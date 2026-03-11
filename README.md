@@ -39,6 +39,8 @@ f1c1/
 |   |-- numericos/                      # Parte 1 - datasets tabulares (.csv)
 |   |   |-- dataset_cardiologico.csv
 |   |-- textuais/                       # Parte 2 - textos médicos (.txt)
+|   |   |-- massa_et_al_2019_prevalencia_dcv_idosos.txt
+|   |   |-- bonotto_et_al_2016_fatores_risco_dcv_mulheres.txt
 |   |-- visuais/                        # Parte 3 - imagens de exames (.jpg/.png)
 |-- scripts/
 |   |-- gerar_dados_numericos.py        # gerador do dataset sintético
@@ -135,7 +137,60 @@ python scripts/gerar_dados_numericos.py
 
 ## Parte 2 - Dados Textuais (NLP)
 
-Status: pendente.
+### Objetivo
+
+Selecionar textos médicos relacionados a doenças cardiovasculares para alimentar futuros algoritmos de Processamento de Linguagem Natural (NLP) do projeto CardioIA.
+
+### Textos selecionados
+
+Os textos são papers científicos revisados por pares, publicados no periódico Ciência & Saúde Coletiva com acesso aberto via SciELO (licença Creative Commons). A escolha de papers garante estrutura textual bem definida (resumo, introdução, metodologia, resultados, discussão, conclusão) que algoritmos de NLP conseguem segmentar e classificar com maior precisão.
+
+#### Paper 1 - Prevalência de DCV em idosos
+
+| Metadado | Valor |
+|----------|-------|
+| Arquivo | [`massa_et_al_2019_prevalencia_dcv_idosos.txt`](data/textuais/massa_et_al_2019_prevalencia_dcv_idosos.txt) |
+| Título | Análise da prevalência de doenças cardiovasculares e fatores associados em idosos, 2000-2010 |
+| Autores | Massa, K.H.C.; Duarte, Y.A.O.; Chiavegatto Filho, A.D.P. |
+| Periódico | Ciência & Saúde Coletiva, v.24, n.1, p.105-114, 2019 |
+| DOI | [10.1590/1413-81232018241.02072017](https://doi.org/10.1590/1413-81232018241.02072017) |
+
+O paper analisa a mudança na prevalência de doença cardiovascular entre idosos de São Paulo (2000-2010) utilizando dados do Estudo SABE. Identifica aumento significativo na prevalência (17,9% para 22,9%) e associações com idade avançada, tabagismo, diabetes e hipertensão.
+
+#### Paper 2 - Fatores de risco cardiovascular em mulheres
+
+| Metadado | Valor |
+|----------|-------|
+| Arquivo | [`bonotto_et_al_2016_fatores_risco_dcv_mulheres.txt`](data/textuais/bonotto_et_al_2016_fatores_risco_dcv_mulheres.txt) |
+| Título | Conhecimento dos fatores de risco modificáveis para doença cardiovascular entre mulheres e seus fatores associados: um estudo de base populacional |
+| Autores | Bonotto, G.M.; Mendoza-Sassi, R.A.; Susin, L.R.O. |
+| Periódico | Ciência & Saúde Coletiva, v.21, n.1, p.293-302, 2016 |
+| DOI | [10.1590/1413-81232015211.07232015](https://doi.org/10.1590/1413-81232015211.07232015) |
+
+O paper avalia o conhecimento de 1.593 mulheres sobre fatores de risco cardiovascular modificáveis. Revela que apenas 33% conheciam três ou mais dos sete fatores pesquisados, com iniquidade associada a menor escolaridade e renda.
+
+### Como algoritmos de NLP podem explorar os textos
+
+Os papers selecionados oferecem conteúdo rico para múltiplas técnicas de NLP:
+
+- **Extração de entidades clínicas (NER)** - identificar automaticamente menções a doenças (hipertensão, diabetes, DCV), fatores de risco (tabagismo, sedentarismo, obesidade), medicamentos e exames nos textos. Essas entidades alimentam bases de conhecimento médico estruturadas.
+
+- **Classificação de tópicos** - categorizar seções e parágrafos por tema (epidemiologia, fatores de risco, metodologia estatística, recomendações clínicas). Modelos treinados nessa tarefa podem organizar automaticamente grandes volumes de literatura médica.
+
+- **Análise de sentimento e tom clínico** - detectar a gravidade e urgência nas descrições de fatores de risco e resultados epidemiológicos. Essa análise apoia sistemas de triagem que priorizam pacientes com base em relatos textuais.
+
+- **Extração de relações** - mapear relações causais entre fatores de risco e desfechos cardiovasculares (tabagismo eleva risco de DCV, hipertensão associada a infarto). Essas relações estruturadas alimentam grafos de conhecimento médico.
+
+- **Sumarização automática** - gerar resumos concisos de papers longos para profissionais de saúde que precisam acessar evidências rapidamente durante a prática clínica.
+
+### Relevância para IA aplicada à saúde
+
+A aplicação de NLP em textos médicos cardiovasculares contribui diretamente para:
+
+- Automatizar a revisão de literatura médica, acelerando a atualização de protocolos clínicos
+- Alimentar chatbots e assistentes virtuais de saúde com informações baseadas em evidências
+- Identificar lacunas no conhecimento populacional sobre fatores de risco, direcionando campanhas de saúde pública
+- Apoiar sistemas de apoio à decisão clínica com extração automática de evidências da literatura
 
 ---
 
