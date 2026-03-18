@@ -10,25 +10,32 @@
 
 <br>
 
-# Cap 1 - A Busca de Dados: Preparando o Terreno para a Inteligência Cardiológica
+# CardioIA - Plataforma Digital Inteligente para Cardiologia
 
 ## Informações do Grupo: Murkveil
-|Nome Completo|RM|
-|---|---|
-|[LEONARDO DE SENA](https://www.linkedin.com/in/leonardosena)|RM563351|
 
-## Professores:
+| Nome Completo | RM |
+|---|---|
+| [LEONARDO DE SENA](https://www.linkedin.com/in/leonardosena) | RM563351 |
+
 ### Tutor
 - [André Godoi Chiovato](https://www.linkedin.com/in/inova-fusca)
 
-## Coordenador
+### Coordenador
 - Caique Nonato da Silva Bezerra
+
+---
 
 ## Descrição
 
-O CardioIA é um projeto acadêmico do curso de Inteligência Artificial da FIAP que desafia o desenvolvimento de uma plataforma digital inteligente simulando o ecossistema de uma cardiologia moderna. O projeto integra dados clínicos, modelos de Machine Learning, Visão Computacional, IoT e agentes inteligentes para lidar com triagem, diagnósticos, monitoramento, assistência remota e previsões médicas.
+O CardioIA é um projeto acadêmico do curso de Inteligência Artificial da FIAP que simula o ecossistema de uma cardiologia moderna. O projeto integra dados clínicos, modelos de Machine Learning, Visão Computacional, IoT e agentes inteligentes para lidar com triagem, diagnósticos, monitoramento, assistência remota e previsões médicas.
 
-Na Fase 1 - Batimentos de Dados, o objetivo é buscar, organizar e preparar três tipos de dados cardiológicos (numéricos, textuais e visuais) que alimentarão os módulos inteligentes do CardioIA nas fases seguintes.
+O repositório cobre duas fases:
+
+- **Fase 1 - Batimentos de Dados:** busca, organiza e prepara três tipos de dados cardiológicos (numéricos, textuais e visuais) que alimentam os módulos inteligentes nas fases seguintes.
+- **Fase 2 - Diagnóstico Automatizado:** desenvolve um módulo inteligente que analisa relatos clínicos em linguagem natural, reconhece sintomas, detecta negações, qualifica achados semiológicos e sugere diagnósticos cardiovasculares assistidos por IA.
+
+---
 
 ## Estrutura do repositório
 
@@ -36,45 +43,69 @@ Na Fase 1 - Batimentos de Dados, o objetivo é buscar, organizar e preparar trê
 f1c1/
 |-- README.md
 |-- data/
-|   |-- numericos/                      # Parte 1 - datasets tabulares (.csv)
-|   |   |-- dataset_cardiologico.csv
-|   |-- textuais/                       # Parte 2 - textos médicos (.txt)
+|   |-- README.md
+|   |-- numericos/
+|   |   |-- dataset_cardiologico.csv          # Fase 1 - 300 pacientes sintéticos (18 variáveis)
+|   |-- textuais/
 |   |   |-- massa_et_al_2019_prevalencia_dcv_idosos.txt
 |   |   |-- bonotto_et_al_2016_fatores_risco_dcv_mulheres.txt
-|   |-- visuais/                        # Parte 3 - imagens de exames (.jpg/.png)
-|   |   |-- ecg/                       # eletrocardiogramas (.png)
-|   |   |-- raio_x_toracico/           # raio-X de torax (.jpeg/.jpg/.png)
+|   |   |-- sintomas_pacientes.txt            # Fase 2 - 10 relatos de pacientes
+|   |   |-- mapa_conhecimento.json            # Fase 2 - ontologia com 8 doenças e scoring declarativo
+|   |   |-- mapa_conhecimento.csv             # Fase 2 - visão tabulada (20 combinações sintoma-doença)
+|   |-- visuais/
+|   |   |-- ecg/                              # Fase 1 - 50 ECGs (normal/arritmia/infarto)
+|   |   |-- raio_x_toracico/                  # Fase 1 - 50 raios-X (normal/pneumonia)
 |-- scripts/
-|   |-- gerar_dados_numericos.py        # gerador do dataset sintético
-|-- notebooks/                          # (futuro) notebooks Colab/Jupyter
+|   |-- README.md
+|   |-- gerar_dados_numericos.py              # Fase 1 - gerador do dataset sintético
+|   |-- extracao_sintomas.py                  # wrapper de retrocompatibilidade (depreciado)
+|   |-- cardio_extrator/                      # Fase 2 - pacote de extração de sintomas
+|   |   |-- __init__.py                       # exports públicos
+|   |   |-- cli.py                            # interface de linha de comando
+|   |   |-- pipeline.py                       # orquestração do pipeline
+|   |   |-- preprocessamento.py               # normalização de texto
+|   |   |-- negacao.py                        # motor de negação contextual
+|   |   |-- extratores.py                     # 7 extratores clínicos
+|   |   |-- inferencia.py                     # motor de scoring declarativo
+|   |   |-- formatacao.py                     # formatação de saída textual
+|   |   |-- modelos.py                        # dataclasses de domínio
+|   |   |-- io.py                             # carregamento de dados
+|   |   |-- vocabulario/                      # subpacote de dados puros (regex pré-compilados)
+|   |   |   |-- __init__.py
+|   |   |   |-- sintomas.py                   # 22 sintomas cardiovasculares
+|   |   |   |-- qualificadores.py             # qualificadores semiológicos
+|   |   |   |-- contexto.py                   # contextos clínicos
+|   |   |   |-- fatores_risco.py              # 6 fatores de risco
+|   |   |   |-- medicacoes.py                 # 7 classes de medicações
+|   |   |   |-- temporal.py                   # padrões temporais
+|   |   |   |-- negacao.py                    # constantes de negação
+|-- tests/
+|   |-- test_extracao.py                      # 48 testes automatizados (pytest)
 ```
 
-A documentação técnica detalhada de cada diretório está disponível em:
-- [`data/README.md`](data/README.md) - dicionário de variáveis, relevância clínica, governança de dados
-- [`scripts/README.md`](scripts/README.md) - uso, correlações clínicas, reprodutibilidade
+A documentação técnica detalhada está disponível em:
+- [`data/README.md`](data/README.md) - dicionário de variáveis, relevância clínica, governança de dados, documentação dos arquivos da Fase 2
+- [`scripts/README.md`](scripts/README.md) - uso dos scripts, arquitetura do pacote cardio_extrator
+- [`scripts/cardio_extrator/README.md`](scripts/cardio_extrator/README.md) - decisões arquiteturais, fluxo do pipeline, como estender o sistema
+- [`tests/README.md`](tests/README.md) - cobertura dos testes, como executar
 
 ---
 
-## Parte 1 - Dados Numéricos (IoT)
+## Fase 1 - Batimentos de Dados
 
-### Objetivo
+### Parte 1 - Dados Numéricos (IoT)
+
+#### Objetivo
 
 Buscar e preparar um dataset numérico contendo variáveis clínicas de pacientes cardiológicos para alimentar futuros algoritmos de IA do projeto CardioIA.
 
-### Dataset
+#### Dataset
 
 O arquivo [`data/numericos/dataset_cardiologico.csv`](data/numericos/dataset_cardiologico.csv) contém 300 registros sintéticos de pacientes cardiológicos com 18 variáveis clínicas.
 
 #### Por que dados sintéticos?
 
-Datasets cardiológicos reais envolvem informações sensíveis protegidas por legislação de privacidade (LGPD, HIPAA), o que restringe severamente sua disponibilização pública. A geração sintética permite:
-
-- Controlar a distribuição dos dados e garantir balanceamento entre classes
-- Criar correlações clinicamente coerentes entre variáveis
-- Garantir reprodutibilidade total via seed fixa
-- Eliminar riscos de privacidade e conformidade regulatória
-
-O script [`scripts/gerar_dados_numericos.py`](scripts/gerar_dados_numericos.py) gera cada paciente em três etapas: sorteia variáveis demográficas com base em prevalências epidemiológicas brasileiras (IBGE/PNS), deriva sinais vitais e exames laboratoriais aplicando correlações clínicas, e determina a presença de doença cardíaca pelo risco acumulado.
+A LGPD proíbe a disponibilização pública de dados clínicos reais sem anonimização certificada. Datasets cardiológicos contêm combinações únicas de idade, sexo e comorbidades que permitem reidentificação mesmo após pseudonimização. O script [`scripts/gerar_dados_numericos.py`](scripts/gerar_dados_numericos.py) gera dados inteiramente sintéticos com seed fixa para garantir reprodutibilidade sem risco jurídico. A alternativa de usar datasets públicos como o Cleveland Heart Disease exigiria verificação de conformidade com LGPD e limitaria o controle sobre distribuição de classes e correlações entre variáveis.
 
 #### Variáveis
 
@@ -91,10 +122,10 @@ O dicionário completo com tipo, faixa, unidade e descrição de cada variável 
 
 #### Relevância clínica
 
-As variáveis foram selecionadas com base nos principais fatores de risco cardiovascular reconhecidos pela Sociedade Brasileira de Cardiologia (SBC):
+As variáveis refletem os principais fatores de risco cardiovascular reconhecidos pela Sociedade Brasileira de Cardiologia (SBC):
 
 - **Pressão arterial** - a hipertensão arterial é o principal fator de risco modificável para doenças cardiovasculares. Valores sistólicos acima de 140 mmHg indicam hipertensão, elevando o risco de infarto e AVC.
-- **Perfil lipídico** (colesterol total, HDL, LDL, triglicerídeos) - o LDL elevado deposita gordura nas artérias formando placas ateroscleróticas, enquanto o HDL atua como fator protetor. A razão entre colesterol total e HDL é um dos melhores preditores de risco cardiovascular.
+- **Perfil lipídico** (colesterol total, HDL, LDL, triglicerídeos) - o LDL elevado deposita gordura nas artérias formando placas ateroscleróticas, enquanto o HDL atua como fator protetor.
 - **Glicemia e diabetes** - o diabetes mellitus danifica os vasos sanguíneos ao longo do tempo, dobrando o risco de doença cardíaca.
 - **IMC** - a obesidade (IMC acima de 30) sobrecarrega o coração e está associada a hipertensão, diabetes e dislipidemia.
 - **Frequência cardíaca** - valores em repouso acima de 80 bpm estão associados a maior mortalidade cardiovascular.
@@ -102,21 +133,11 @@ As variáveis foram selecionadas com base nos principais fatores de risco cardio
 - **Histórico familiar** - a predisposição genética é um fator de risco não modificável relevante para estratificação de risco.
 - **Dor torácica e sintomas** - a classificação da dor torácica é o primeiro critério de triagem em emergências cardiológicas, e os sintomas compõem o quadro clínico para triagem automatizada.
 
-#### Importância para IA em saúde
-
-O dataset foi projetado para alimentar múltiplos módulos de IA nas fases futuras do CardioIA:
-
-- **Classificação** - modelos como Random Forest, XGBoost e redes neurais podem utilizar `doenca_cardiaca` como variável alvo para prever risco cardiovascular
-- **Clusterização** - algoritmos como K-Means e DBSCAN podem identificar perfis de pacientes com características semelhantes, apoiando a estratificação de risco
-- **NLP** - a coluna `sintomas` permite integração com módulos de processamento de linguagem natural para extração e correlação de sintomas
-- **Balanceamento** - a distribuição próxima de 50/50 entre pacientes com e sem doença cardíaca evita viés de classe nos modelos
-
 #### Governança de Dados
 
-- Os dados são inteiramente sintéticos e não representam pacientes reais, eliminando riscos de privacidade e conformidade com LGPD
-- A seed fixa (42) garante reprodutibilidade e auditabilidade do processo de geração
-- As prevalências epidemiológicas refletem dados populacionais brasileiros publicados pelo IBGE/PNS
-- O script de geração está versionado no repositório, permitindo rastreabilidade completa da origem dos dados
+- O script de geração utiliza seed fixa (42) para reprodutibilidade e auditabilidade
+- As prevalências epidemiológicas refletem dados populacionais brasileiros do IBGE/PNS
+- O script está versionado no repositório, garantindo rastreabilidade completa da origem dos dados
 
 #### Verificação de integridade
 
@@ -128,24 +149,21 @@ O dataset foi projetado para alimentar múltiplos módulos de IA nas fases futur
 | MD5 | `37494bc27300a66b716dd2ca10d2133f` |
 
 ```bash
-# verificar integridade
 md5sum data/numericos/dataset_cardiologico.csv
-
-# regenerar dataset
 python scripts/gerar_dados_numericos.py
 ```
 
 ---
 
-## Parte 2 - Dados Textuais (NLP)
+### Parte 2a - Dados Textuais (NLP): Papers Científicos
 
-### Objetivo
+#### Objetivo
 
 Selecionar textos médicos relacionados a doenças cardiovasculares para alimentar futuros algoritmos de Processamento de Linguagem Natural (NLP) do projeto CardioIA.
 
-### Textos selecionados
+#### Textos selecionados
 
-Os textos são papers científicos revisados por pares, publicados no periódico Ciência & Saúde Coletiva com acesso aberto via SciELO (licença Creative Commons). A escolha de papers garante estrutura textual bem definida (resumo, introdução, metodologia, resultados, discussão, conclusão) que algoritmos de NLP conseguem segmentar e classificar com maior precisão.
+Os textos são papers científicos revisados por pares, publicados no periódico Ciência & Saúde Coletiva com acesso aberto via SciELO (licença Creative Commons). A escolha de papers revisados por pares garante estrutura textual bem definida (resumo, introdução, metodologia, resultados, discussão, conclusão) que algoritmos de NLP conseguem segmentar e classificar com maior precisão. A alternativa de usar textos de blogs médicos ou materiais educativos introduziria inconsistência estrutural e terminológica que prejudicaria o treinamento de modelos.
 
 #### Paper 1 - Prevalência de DCV em idosos
 
@@ -157,8 +175,6 @@ Os textos são papers científicos revisados por pares, publicados no periódico
 | Periódico | Ciência & Saúde Coletiva, v.24, n.1, p.105-114, 2019 |
 | DOI | [10.1590/1413-81232018241.02072017](https://doi.org/10.1590/1413-81232018241.02072017) |
 
-O paper analisa a mudança na prevalência de doença cardiovascular entre idosos de São Paulo (2000-2010) utilizando dados do Estudo SABE. Identifica aumento significativo na prevalência (17,9% para 22,9%) e associações com idade avançada, tabagismo, diabetes e hipertensão.
-
 #### Paper 2 - Fatores de risco cardiovascular em mulheres
 
 | Metadado | Valor |
@@ -169,42 +185,81 @@ O paper analisa a mudança na prevalência de doença cardiovascular entre idoso
 | Periódico | Ciência & Saúde Coletiva, v.21, n.1, p.293-302, 2016 |
 | DOI | [10.1590/1413-81232015211.07232015](https://doi.org/10.1590/1413-81232015211.07232015) |
 
-O paper avalia o conhecimento de 1.593 mulheres sobre fatores de risco cardiovascular modificáveis. Revela que apenas 33% conheciam três ou mais dos sete fatores pesquisados, com iniquidade associada a menor escolaridade e renda.
+---
 
-### Como algoritmos de NLP podem explorar os textos
+### Parte 2b - Dados Textuais (NLP): Pipeline de Extração de Sintomas
 
-Os papers selecionados oferecem conteúdo rico para múltiplas técnicas de NLP:
+#### Objetivo
 
-- **Extração de entidades clínicas (NER)** - identificar automaticamente menções a doenças (hipertensão, diabetes, DCV), fatores de risco (tabagismo, sedentarismo, obesidade), medicamentos e exames nos textos. Essas entidades alimentam bases de conhecimento médico estruturadas.
+Construir um sistema determinístico de NLP clínico que lê relatos de pacientes em linguagem natural, identifica sintomas cardiovasculares, detecta negações, qualifica achados semiológicos e sugere diagnósticos ponderados por valor discriminativo.
 
-- **Classificação de tópicos** - categorizar seções e parágrafos por tema (epidemiologia, fatores de risco, metodologia estatística, recomendações clínicas). Modelos treinados nessa tarefa podem organizar automaticamente grandes volumes de literatura médica.
+#### O que o pipeline faz
 
-- **Análise de sentimento e tom clínico** - detectar a gravidade e urgência nas descrições de fatores de risco e resultados epidemiológicos. Essa análise apoia sistemas de triagem que priorizam pacientes com base em relatos textuais.
+O pacote [`scripts/cardio_extrator/`](scripts/cardio_extrator/) executa o seguinte fluxo para cada relato:
 
-- **Extração de relações** - mapear relações causais entre fatores de risco e desfechos cardiovasculares (tabagismo eleva risco de DCV, hipertensão associada a infarto). Essas relações estruturadas alimentam grafos de conhecimento médico.
+1. **Normaliza** o texto (minúsculo, expansão de contrações coloquiais, correção ortográfica)
+2. **Tokeniza** o texto para análise posicional
+3. **Extrai sintomas** via regex pré-compilados (22 sintomas cardiovasculares)
+4. **Detecta negação** contextual (negadores, restauradores, delimitadores de escopo, dupla negação)
+5. **Extrai qualificadores** semiológicos (tipo de dor, irradiação, fatores de alívio/piora)
+6. **Extrai contexto** clínico (pródromo viral, histórico familiar, esforço físico)
+7. **Extrai temporalidade** (início, duração, frequência, progressão)
+8. **Extrai fatores de risco** (tabagismo, diabetes, hipertensão, dislipidemia, obesidade, sedentarismo)
+9. **Extrai medicações** (7 classes farmacológicas)
+10. **Pontua diagnósticos** via motor declarativo (pesos, bônus, penalidades, normalização 0-1)
+11. **Avalia red flags** de emergência cardiovascular (SCA, IC descompensada, síncope de esforço)
 
-- **Sumarização automática** - gerar resumos concisos de papers longos para profissionais de saúde que precisam acessar evidências rapidamente durante a prática clínica.
+#### Mapa de conhecimento
 
-### Relevância para IA aplicada à saúde
+O arquivo [`data/textuais/mapa_conhecimento.json`](data/textuais/mapa_conhecimento.json) contém a ontologia clínica que o motor de inferência consome. O JSON define 8 doenças cardiovasculares (DAC, IC, FA, EAo, HAS, miocardite, pericardite, CMH), cada uma com:
 
-A aplicação de NLP em textos médicos cardiovasculares contribui diretamente para:
+- Sintomas com pesos base individualizados
+- Regras de bonificação com condições declarativas (AND/OR/COUNT_GE)
+- Regras de exclusão com penalidades
+- Fatores de risco com pesos aditivos
+- Sinais clínicos, qualificadores de referência e discriminadores textuais
 
-- Automatizar a revisão de literatura médica, acelerando a atualização de protocolos clínicos
-- Alimentar chatbots e assistentes virtuais de saúde com informações baseadas em evidências
-- Identificar lacunas no conhecimento populacional sobre fatores de risco, direcionando campanhas de saúde pública
-- Apoiar sistemas de apoio à decisão clínica com extração automática de evidências da literatura
+Adicionar uma nova doença ao sistema requer apenas editar o JSON — zero alteração no código Python.
+
+#### Como executar
+
+```bash
+# saída textual (padrão)
+PYTHONPATH=scripts python -m cardio_extrator.cli
+
+# saída JSON
+PYTHONPATH=scripts python -m cardio_extrator.cli --formato json
+
+# ambos os formatos em arquivo
+PYTHONPATH=scripts python -m cardio_extrator.cli --formato ambos --saida resultado
+
+# com logging detalhado
+PYTHONPATH=scripts python -m cardio_extrator.cli --log INFO
+```
+
+#### Exemplo de saída (resumido)
+
+```
+RELATO 1: "Há três dias sinto uma dor forte no peito, como um aperto..."
+
+SINTOMAS IDENTIFICADOS:
+  + dor_toracica (expressão: "dor forte no peito")
+
+QUALIFICADORES SEMIOLÓGICOS:
+  dor_toracica: tipo_opressiva, irradiacao_mse, piora_esforco, alivio_repouso
+
+DIAGNÓSTICOS SUGERIDOS:
+  1. Doença Arterial Coronariana (normalizado: 0.45 | confiança: moderada)
+     - bônus +1.2: Padrão esforço-repouso define angina típica (critérios Diamond-Forrester)
+```
 
 ---
 
-## Parte 3 - Dados Visuais (VC)
+### Parte 3 - Dados Visuais (VC)
 
-### Objetivo
+#### Objetivo
 
 Selecionar imagens de exames cardiológicos para alimentar futuros algoritmos de Visão Computacional (VC) do projeto CardioIA.
-
-### Imagens selecionadas
-
-O diretório [`data/visuais/`](data/visuais/) contém 100 imagens organizadas em duas categorias de exames cardiológicos:
 
 #### ECG - Eletrocardiogramas (50 imagens)
 
@@ -214,9 +269,7 @@ O diretório [`data/visuais/`](data/visuais/) contém 100 imagens organizadas em
 | Formato | PNG |
 | Origem | Kaggle - [ECG Dataset](https://www.kaggle.com/datasets/ankurray00/ecg-dataset) |
 | Licença | CC-BY-NC-SA-4.0 |
-| Classes | Normal Person (17), Abnormal Heartbeat (17), History of MI (16) |
-
-As imagens representam traçados de eletrocardiograma de 12 derivações, o exame mais utilizado na prática cardiológica para detecção de arritmias, isquemia miocárdica e infarto. A distribuição balanceada entre as três classes permite treinar modelos de classificação sem viés significativo.
+| Classes | Normal (17), Arritmia (17), Infarto (16) |
 
 #### Raio-X torácico (50 imagens)
 
@@ -228,28 +281,61 @@ As imagens representam traçados de eletrocardiograma de 12 derivações, o exam
 | Licença | CC0-1.0 (domínio público) |
 | Classes | Normal (25), Pneumonia (25) |
 
-As imagens de raio-X torácico posteroanterior (PA) permitem visualizar a silhueta cardíaca, campos pulmonares e estruturas mediastinais. Alterações como cardiomegalia, congestão pulmonar e derrame pleural são indicadores visuais de insuficiência cardíaca e outras cardiopatias. A classificação entre Normal e Pneumonia exercita técnicas fundamentais de visão computacional aplicáveis a qualquer tarefa de diagnóstico por imagem.
+---
 
-### Como algoritmos de Visão Computacional podem explorar as imagens
+## Como executar
 
-As imagens selecionadas oferecem conteúdo para múltiplas técnicas de VC:
+### Requisitos
 
-- **Classificação de imagens** - modelos como ResNet, EfficientNet e Vision Transformers (ViT) podem classificar ECGs em normal, arritmia e infarto, ou raios-X em normal e patológico. Essa tarefa é a base da triagem automatizada em cardiologia.
+- Python 3.11+
+- pytest (apenas para testes)
+- Nenhuma dependência externa para o código de produção
 
-- **Detecção de anomalias** - algoritmos de detecção de anomalias podem identificar padrões atípicos nos traçados de ECG ou nas radiografias, sinalizando casos que requerem avaliação médica urgente.
+### Gerar dataset numérico (Fase 1)
 
-- **Segmentação** - redes como U-Net podem segmentar a silhueta cardíaca em raios-X torácicos para calcular o índice cardiotorácico (ICT), métrica utilizada no diagnóstico de cardiomegalia.
+```bash
+python scripts/gerar_dados_numericos.py
+```
 
-- **Transfer learning** - modelos pré-treinados em grandes datasets de imagens médicas (como CheXNet) podem ser refinados com estas imagens para tarefas específicas do CardioIA, reduzindo a necessidade de grandes volumes de dados de treino.
+### Executar pipeline de extração (Fase 2)
 
-- **Aumento de dados (data augmentation)** - técnicas como rotação, espelhamento, ajuste de brilho e contraste podem expandir o dataset de 100 imagens para milhares de amostras de treino, melhorando a generalização dos modelos.
+```bash
+PYTHONPATH=scripts python -m cardio_extrator.cli
+```
 
-### Relevância para IA aplicada à saúde
+### Executar testes
 
-A aplicação de Visão Computacional em imagens cardiológicas contribui diretamente para:
+```bash
+PYTHONPATH=scripts python -m pytest tests/ -v
+```
 
-- Automatizar a triagem de ECGs em unidades de emergência, priorizando pacientes com alterações críticas
-- Apoiar o diagnóstico de cardiomegalia e insuficiência cardíaca por meio da análise automatizada de raios-X torácicos
-- Reduzir o tempo de interpretação de exames em regiões com escassez de cardiologistas especializados
-- Integrar com os módulos de dados numéricos e textuais do CardioIA para um sistema de apoio à decisão clínica multimodal
+---
 
+## Testes
+
+O arquivo [`tests/test_extracao.py`](tests/test_extracao.py) contém 48 testes automatizados organizados em 10 classes que cobrem todas as camadas do pipeline de extração:
+
+| Classe | Testes | O que valida |
+|--------|--------|-------------|
+| TestNegacao | 6 | Negação simples, com afirmação, dupla negação, "sem", delimitadores de escopo |
+| TestTemporal | 5 | Início, duração, progressão, frequência |
+| TestScoring | 10 | Doença fictícia sem alterar código, normalização, penalidade, operadores AND/OR/COUNT_GE |
+| TestNormalizacao | 2 | Confiança baixa e alta |
+| TestColoquialismo | 6 | Contrações, espaços, correção ortográfica, palavras intermediárias, DPN com madrugada |
+| TestFatoresRisco | 5 | Tabagismo, diabetes, hipertensão, múltiplos, ausência |
+| TestMedicacoes | 4 | Anti-hipertensivo, estatina, múltiplas classes, ausência |
+| TestSaidaEstruturada | 2 | Serialização JSON, campos completos |
+| TestRedFlags | 5 | IC descompensada, síncope de esforço, SCA, sem alertas, prioridade |
+| TestIntegracao | 3 | 10 relatos com diagnósticos esperados, DAC clássico, pericardite clássica |
+
+---
+
+## Tecnologias
+
+| Tecnologia | Uso |
+|-----------|-----|
+| Python 3.11+ | Linguagem principal |
+| Biblioteca padrão (`re`, `json`, `csv`, `pathlib`, `bisect`, `argparse`, `logging`, `dataclasses`) | Todo o código de produção |
+| pytest | Framework de testes |
+
+O projeto utiliza exclusivamente a biblioteca padrão do Python para o código de produção. Sistemas clínicos de apoio à decisão exigem determinismo e auditabilidade — cada decisão diagnóstica deve ser rastreável a uma regra explícita no mapa de conhecimento. Modelos de linguagem (LLMs) ou bibliotecas de NLP como spaCy introduziriam não-determinismo, dependências pesadas e impossibilidade de auditar por que o sistema chegou a uma conclusão específica. A escolha de regex pré-compilados garante que o pipeline produz exatamente o mesmo resultado para o mesmo input, sempre.
