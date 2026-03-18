@@ -92,13 +92,13 @@ Pacote Python modular para extração de sintomas cardiovasculares e sugestão d
 
 ```bash
 # saída textual
-PYTHONPATH=scripts python -m cardio_extrator.cli
+PYTHONPATH=scripts python -m cardio_extrator
 
 # saída JSON
-PYTHONPATH=scripts python -m cardio_extrator.cli --formato json
+PYTHONPATH=scripts python -m cardio_extrator --formato json
 
 # arquivo de saída com logging
-PYTHONPATH=scripts python -m cardio_extrator.cli --formato ambos --saida resultado --log INFO
+PYTHONPATH=scripts python -m cardio_extrator --formato ambos --saida resultado --log INFO
 ```
 
 ### Argumentos da CLI

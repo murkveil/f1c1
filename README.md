@@ -234,16 +234,16 @@ Adicionar uma nova doença ao sistema requer apenas editar o JSON — zero alter
 
 ```bash
 # saída textual (padrão)
-PYTHONPATH=scripts python -m cardio_extrator.cli
+PYTHONPATH=scripts python -m cardio_extrator
 
 # saída JSON
-PYTHONPATH=scripts python -m cardio_extrator.cli --formato json
+PYTHONPATH=scripts python -m cardio_extrator --formato json
 
 # ambos os formatos em arquivo
-PYTHONPATH=scripts python -m cardio_extrator.cli --formato ambos --saida resultado
+PYTHONPATH=scripts python -m cardio_extrator --formato ambos --saida resultado
 
 # com logging detalhado
-PYTHONPATH=scripts python -m cardio_extrator.cli --log INFO
+PYTHONPATH=scripts python -m cardio_extrator --log INFO
 ```
 
 #### Exemplo de saída (resumido)
@@ -350,7 +350,7 @@ python scripts/gerar_dados_numericos.py
 ### Executar pipeline de extração (Fase 2)
 
 ```bash
-PYTHONPATH=scripts python -m cardio_extrator.cli
+PYTHONPATH=scripts python -m cardio_extrator
 ```
 
 ### Executar testes
