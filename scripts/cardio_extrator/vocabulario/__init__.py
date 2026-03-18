@@ -1,0 +1,23 @@
+"""Fachada do subpacote de vocabulário clínico."""
+
+from .contexto import EXPRESSOES_CONTEXTO
+from .fatores_risco import EXPRESSOES_FATORES_RISCO
+from .medicacoes import EXPRESSOES_MEDICACOES
+from .negacao import (
+    DELIMITADORES_ESCOPO,
+    DUPLA_NEGACAO,
+    JANELA_NEGACAO,
+    NEGADORES,
+    RESTAURADORES,
+)
+from .qualificadores import EXPRESSOES_QUALIFICADORES
+from .sintomas import EXPRESSOES_SINTOMAS
+from .temporal import PADROES_TEMPORAIS
+
+__all__ = [
+    "EXPRESSOES_SINTOMAS", "EXPRESSOES_QUALIFICADORES",
+    "EXPRESSOES_CONTEXTO", "EXPRESSOES_FATORES_RISCO",
+    "EXPRESSOES_MEDICACOES", "PADROES_TEMPORAIS",
+    "NEGADORES", "RESTAURADORES", "DUPLA_NEGACAO",
+    "JANELA_NEGACAO", "DELIMITADORES_ESCOPO",
+]
