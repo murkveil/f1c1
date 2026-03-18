@@ -1,0 +1,758 @@
+{
+  "doenca_arterial_coronariana": {
+    "nome_exibicao": "Doença Arterial Coronariana",
+    "sigla": "DAC",
+    "sinais": [
+      "B4", "sopro_regurgitação_mitral_transitório", "desdobramento_paradoxal_B2",
+      "taquicardia", "diaforese", "palidez_cutânea", "xantomas", "xantelasmas"
+    ],
+    "qualificadores_referencia": {
+      "dor_toracica": {
+        "tipo": ["opressiva", "constritiva", "aperto", "peso", "queimação", "sufocamento"],
+        "localização": ["retroesternal", "difusa", "precordial"],
+        "irradiação": ["membro_superior_esquerdo", "ambos_membros_superiores", "pescoço", "mandíbula", "epigástrio", "dorso_interescapular"],
+        "duração": ["2_a_10_minutos_angina_estável", "maior_20_minutos_SCA"],
+        "fatores_precipitantes": ["esforço_físico", "estresse_emocional", "frio", "refeição_copiosa"],
+        "fatores_alívio": ["repouso", "nitrato_sublingual"]
+      },
+      "dispneia": {
+        "tipo": ["aos_esforços"],
+        "contexto": ["equivalente_anginoso", "mais_comum_em_idosos_diabéticos_mulheres"]
+      }
+    },
+    "discriminadores": [
+      "dor retroesternal opressiva desencadeada por esforço com alívio em menos de 5 minutos com repouso ou nitrato",
+      "irradiação para mandíbula com alta especificidade",
+      "sinal de Levine (mão espalmada no peito)",
+      "exame físico normal entre episódios"
+    ],
+    "scoring": {
+      "sintomas": {
+        "dor_toracica": { "peso_base": 1.0 },
+        "dispneia": { "peso_base": 0.8 },
+        "fadiga": { "peso_base": 0.5 },
+        "sudorese": { "peso_base": 0.6 },
+        "nausea": { "peso_base": 0.4 },
+        "sincope": { "peso_base": 0.3 }
+      },
+      "regras_bonificacao": [
+        {
+          "condicao": { "qualificador": "dor_toracica.tipo_opressiva" },
+          "bonus": 0.8,
+          "justificativa": "Dor opressiva é característica de isquemia miocárdica"
+        },
+        {
+          "condicao": { "qualificador": "dor_toracica.irradiacao_mse" },
+          "bonus": 0.6,
+          "justificativa": "Irradiação para MSE é achado clássico de DAC"
+        },
+        {
+          "condicao": { "qualificador": "dor_toracica.irradiacao_mandibula" },
+          "bonus": 0.8,
+          "justificativa": "Irradiação para mandíbula tem alta especificidade para DAC (LR+ ~5.0, Swap et al. 2005)"
+        },
+        {
+          "condicao": {
+            "operador": "AND",
+            "criterios": [
+              { "qualificador": "dor_toracica.piora_esforco" },
+              { "qualificador": "dor_toracica.alivio_repouso" }
+            ]
+          },
+          "bonus": 1.2,
+          "justificativa": "Padrão esforço-repouso define angina típica (critérios Diamond-Forrester)"
+        },
+        {
+          "condicao": { "qualificador": "dor_toracica.piora_esforco" },
+          "bonus": 0.5,
+          "justificativa": "Desencadeamento por esforço sugere etiologia isquêmica"
+        },
+        {
+          "condicao": { "qualificador": "dor_toracica.alivio_repouso" },
+          "bonus": 0.5,
+          "justificativa": "Alívio com repouso é critério Diamond-Forrester"
+        }
+      ],
+      "regras_exclusao": [
+        {
+          "condicao": { "qualificador": "dor_toracica.tipo_pleuritica" },
+          "penalidade": -0.8,
+          "justificativa": "Dor pleurítica torna DAC menos provável"
+        },
+        {
+          "condicao": { "qualificador": "dor_toracica.alivio_inclinado" },
+          "penalidade": -0.6,
+          "justificativa": "Alívio postural sugere pericardite, não isquemia"
+        }
+      ],
+      "fatores_risco": {
+        "tabagismo": 0.5,
+        "diabetes": 0.5,
+        "hipertensao": 0.4,
+        "dislipidemia": 0.4,
+        "historico_familiar_dac": 0.5
+      }
+    }
+  },
+
+  "insuficiencia_cardiaca": {
+    "nome_exibicao": "Insuficiência Cardíaca",
+    "sigla": "IC",
+    "sinais": [
+      "estertores_crepitantes_bibasais", "B3", "B4", "turgência_jugular",
+      "refluxo_hepatojugular", "hepatomegalia", "edema_periférico_bilateral",
+      "ictus_desviado", "sopro_regurgitação_mitral", "taquicardia",
+      "pulso_alternante", "respiração_cheyne_stokes"
+    ],
+    "qualificadores_referencia": {
+      "dispneia": {
+        "tipo": ["aos_esforços", "progressiva"],
+        "temporalidade": ["piora_gradual_semanas_meses", "aguda_em_descompensação"]
+      },
+      "ortopneia": {
+        "tipo": ["ao_deitar"],
+        "fatores_alívio": ["elevar_cabeceira", "sentar"],
+        "quantificação": ["número_de_travesseiros"]
+      },
+      "dispneia_paroxistica_noturna": {
+        "tipo": ["despertar_noturno_com_sufocamento"],
+        "temporalidade": ["1_a_3_horas_após_deitar"],
+        "fatores_alívio": ["sentar", "levantar"],
+        "valor_discriminativo": "altamente_específica_para_IC"
+      },
+      "edema_membros_inferiores": {
+        "tipo": ["bilateral", "simétrico", "com_cacifo"],
+        "temporalidade": ["vespertino"],
+        "progressão": ["anasarca_em_casos_avançados"]
+      },
+      "fadiga": {
+        "tipo": ["desproporcional_ao_esforço"],
+        "mecanismo": ["baixo_débito_cardíaco", "má_perfusão_muscular"]
+      }
+    },
+    "discriminadores": [
+      "dispneia paroxística noturna (altamente específica)",
+      "B3 com especificidade acima de 90% para pressões de enchimento elevadas",
+      "turgência jugular elevada com refluxo hepatojugular positivo",
+      "ortopneia quantificável por número de travesseiros",
+      "pulso alternante (patognomônico de disfunção sistólica grave)"
+    ],
+    "scoring": {
+      "sintomas": {
+        "dispneia": { "peso_base": 1.0 },
+        "ortopneia": { "peso_base": 1.0 },
+        "dispneia_paroxistica_noturna": { "peso_base": 1.0 },
+        "fadiga": { "peso_base": 0.8 },
+        "edema_membros_inferiores": { "peso_base": 1.0 },
+        "palpitacao": { "peso_base": 0.5 },
+        "nocturia": { "peso_base": 0.6 },
+        "tosse_seca_noturna": { "peso_base": 0.5 },
+        "distensao_abdominal": { "peso_base": 0.5 },
+        "confusao_mental": { "peso_base": 0.4 }
+      },
+      "regras_bonificacao": [
+        {
+          "condicao": { "sintoma": "dispneia_paroxistica_noturna" },
+          "bonus": 1.5,
+          "justificativa": "DPN é altamente específica para IC (critério maior de Framingham)"
+        },
+        {
+          "condicao": { "sintoma": "ortopneia" },
+          "bonus": 0.8,
+          "justificativa": "Ortopneia é marcador de congestão pulmonar em IC"
+        },
+        {
+          "condicao": {
+            "operador": "AND",
+            "criterios": [
+              { "sintoma": "edema_membros_inferiores" },
+              { "sintoma": "nocturia" }
+            ]
+          },
+          "bonus": 0.5,
+          "justificativa": "Edema vespertino com noctúria indica congestão sistêmica (redistribuição de fluidos)"
+        },
+        {
+          "condicao": {
+            "operador": "AND",
+            "criterios": [
+              { "sintoma": "dispneia" },
+              { "sintoma": "edema_membros_inferiores" },
+              { "qualificador": "dispneia.ao_deitar" }
+            ]
+          },
+          "bonus": 0.8,
+          "justificativa": "Tríade dispneia + edema + ortopneia é altamente sugestiva de IC biventricular"
+        }
+      ],
+      "regras_exclusao": [],
+      "fatores_risco": {
+        "hipertensao": 0.5,
+        "diabetes": 0.4,
+        "tabagismo": 0.3,
+        "obesidade": 0.3
+      }
+    }
+  },
+
+  "fibrilacao_atrial": {
+    "nome_exibicao": "Fibrilação Atrial",
+    "sigla": "FA",
+    "sinais": [
+      "pulso_irregularmente_irregular", "déficit_de_pulso",
+      "variação_intensidade_B1", "ausência_onda_a_jugular", "ausência_B4"
+    ],
+    "qualificadores_referencia": {
+      "palpitacao": {
+        "tipo": ["batimentos_irregulares", "rápidos", "coração_disparado", "falhas"],
+        "início": ["súbito_paroxística", "insidioso_persistente"],
+        "duração": ["minutos_a_horas_paroxística", "contínua_persistente"],
+        "fatores_precipitantes": ["exercício", "álcool", "cafeína", "estresse", "privação_de_sono"]
+      },
+      "dispneia": {
+        "tipo": ["aos_esforços", "desproporcional_ao_habitual"],
+        "mecanismo": ["perda_contribuição_atrial_débito_cardíaco"]
+      },
+      "tontura": {
+        "tipo": ["pré-síncope"],
+        "mecanismo": ["baixo_débito", "pausas_pós-conversão"]
+      }
+    },
+    "discriminadores": [
+      "pulso irregularmente irregular (diferencia de extrassístoles)",
+      "déficit de pulso (FC apical maior que FC radial)",
+      "variação da intensidade de B1",
+      "até 40% dos pacientes são assintomáticos"
+    ],
+    "scoring": {
+      "sintomas": {
+        "palpitacao": { "peso_base": 1.0 },
+        "dispneia": { "peso_base": 0.7 },
+        "fadiga": { "peso_base": 0.6 },
+        "tontura": { "peso_base": 0.6 },
+        "sincope": { "peso_base": 0.4 }
+      },
+      "regras_bonificacao": [
+        {
+          "condicao": { "qualificador": "palpitacao.irregular" },
+          "bonus": 1.0,
+          "justificativa": "Palpitações irregulares são o achado cardinal da FA (pulso irregularmente irregular)"
+        },
+        {
+          "condicao": { "qualificador": "palpitacao.inicio_subito" },
+          "bonus": 0.5,
+          "justificativa": "Início súbito sugere FA paroxística"
+        },
+        {
+          "condicao": {
+            "operador": "OR",
+            "criterios": [
+              { "qualificador": "palpitacao.precipitante_cafe" },
+              { "qualificador": "palpitacao.precipitante_estresse" }
+            ]
+          },
+          "bonus": 0.3,
+          "justificativa": "Cafeína e estresse são fatores precipitantes conhecidos de FA"
+        }
+      ],
+      "regras_exclusao": [],
+      "fatores_risco": {
+        "hipertensao": 0.4,
+        "diabetes": 0.3,
+        "obesidade": 0.3
+      }
+    }
+  },
+
+  "estenose_aortica": {
+    "nome_exibicao": "Estenose Aórtica",
+    "sigla": "EAo",
+    "sinais": [
+      "sopro_sistólico_ejetivo_foco_aórtico", "pulso_parvus_et_tardus",
+      "B2_hipofonética", "B4", "desdobramento_paradoxal_B2",
+      "frêmito_sistólico_foco_aórtico", "ictus_sustentado"
+    ],
+    "qualificadores_referencia": {
+      "dispneia": {
+        "tipo": ["aos_esforços", "progressiva"],
+        "mecanismo": ["disfunção_diastólica_por_hipertrofia_concêntrica"]
+      },
+      "dor_toracica": {
+        "tipo": ["opressiva", "retroesternal"],
+        "contexto": ["indistinguível_da_angina_da_DAC"],
+        "fatores_precipitantes": ["esforço"],
+        "fatores_alívio": ["repouso"],
+        "observação": "nitrato pode causar hipotensão grave na EAo"
+      },
+      "sincope": {
+        "tipo": ["síncope_de_esforço", "pré-síncope"],
+        "temporalidade": ["durante_ou_imediatamente_após_esforço"],
+        "mecanismo": ["vasodilatação_periférica_com_débito_fixo"]
+      }
+    },
+    "discriminadores": [
+      "sopro sistólico ejetivo crescendo-decrescendo em foco aórtico com irradiação para carótidas",
+      "pulso parvus et tardus",
+      "B2 hipofonética ou ausente",
+      "frêmito sistólico em foco aórtico",
+      "tríade clássica: dispneia, angina e síncope de esforço"
+    ],
+    "scoring": {
+      "sintomas": {
+        "dispneia": { "peso_base": 1.0 },
+        "dor_toracica": { "peso_base": 1.0 },
+        "sincope": { "peso_base": 1.0 }
+      },
+      "regras_bonificacao": [
+        {
+          "condicao": {
+            "operador": "COUNT_GE",
+            "criterios": [
+              { "sintoma": "dispneia" },
+              { "sintoma": "dor_toracica" },
+              { "sintoma": "sincope" }
+            ],
+            "limiar": 2
+          },
+          "bonus": 1.0,
+          "justificativa": "Presença de 2+ da tríade clássica (dispneia, angina, síncope) é altamente sugestiva de EAo"
+        },
+        {
+          "condicao": {
+            "operador": "AND",
+            "criterios": [
+              { "qualificador": "dor_toracica.piora_esforco" },
+              { "qualificador": "dor_toracica.alivio_repouso" }
+            ]
+          },
+          "bonus": 0.5,
+          "justificativa": "Angina de esforço com alívio ao repouso é compatível com EAo"
+        },
+        {
+          "condicao": {
+            "operador": "AND",
+            "criterios": [
+              { "sintoma": "sincope" },
+              { "contexto": "esforco_fisico" }
+            ]
+          },
+          "bonus": 0.8,
+          "justificativa": "Síncope de esforço é marcador de EAo grave (débito fixo com vasodilatação periférica)"
+        }
+      ],
+      "regras_exclusao": [],
+      "fatores_risco": {}
+    }
+  },
+
+  "hipertensao_arterial_sistemica": {
+    "nome_exibicao": "Hipertensão Arterial Sistêmica",
+    "sigla": "HAS",
+    "sinais": [
+      "PA_elevada", "B4", "B2_hiperfonética_foco_aórtico",
+      "ictus_sustentado", "retinopatia_hipertensiva", "sopros_carotídeos"
+    ],
+    "qualificadores_referencia": {
+      "cefaleia": {
+        "tipo": ["occipital", "pulsátil"],
+        "temporalidade": ["matutina"],
+        "valor_discriminativo": "inespecífico, correlação fraca com níveis pressóricos"
+      },
+      "dispneia": {
+        "tipo": ["aos_esforços"],
+        "contexto": ["hipertrofia_ventricular", "IC_hipertensiva"]
+      }
+    },
+    "discriminadores": [
+      "PA elevada em medições repetidas (achado diagnóstico definidor)",
+      "B2 hiperfonética em foco aórtico",
+      "fundoscopia com retinopatia hipertensiva",
+      "B4 com ictus sustentado sem desvio (hipertrofia concêntrica)",
+      "até 90% dos pacientes são assintomáticos"
+    ],
+    "observacao": "Frequentemente diagnosticada incidentalmente ou após lesão de órgão-alvo",
+    "scoring": {
+      "sintomas": {
+        "cefaleia": { "peso_base": 0.7 },
+        "tontura": { "peso_base": 0.7 },
+        "zumbido": { "peso_base": 0.8 },
+        "epistaxe": { "peso_base": 0.8 },
+        "visao_turva": { "peso_base": 0.8 },
+        "dispneia": { "peso_base": 0.5 },
+        "nocturia": { "peso_base": 0.5 }
+      },
+      "regras_bonificacao": [
+        {
+          "condicao": {
+            "operador": "COUNT_GE",
+            "criterios": [
+              { "sintoma": "cefaleia" },
+              { "sintoma": "tontura" },
+              { "sintoma": "zumbido" },
+              { "sintoma": "epistaxe" },
+              { "sintoma": "visao_turva" }
+            ],
+            "limiar": 3
+          },
+          "bonus": 1.0,
+          "justificativa": "Presença de 3+ sintomas de lesão de órgão-alvo reforça suspeita de HAS"
+        }
+      ],
+      "regras_exclusao": [],
+      "fatores_risco": {
+        "tabagismo": 0.3,
+        "diabetes": 0.3,
+        "obesidade": 0.4,
+        "sedentarismo": 0.3
+      }
+    }
+  },
+
+  "miocardite": {
+    "nome_exibicao": "Miocardite",
+    "sigla": null,
+    "sinais": [
+      "taquicardia_desproporcional_à_febre", "B3", "B4",
+      "sopro_regurgitação_mitral", "estertores_pulmonares",
+      "turgência_jugular", "hipotensão", "atrito_pericárdico"
+    ],
+    "qualificadores_referencia": {
+      "dor_toracica": {
+        "tipo": ["pleurítica", "opressiva", "vaga"],
+        "localização": ["precordial", "retroesternal"],
+        "irradiação": ["pescoço", "trapézio", "ombros"],
+        "fatores_piora": ["movimentação_do_tórax", "tosse", "respiração", "esforço"],
+        "fatores_alívio": ["sentar_inclinado_para_frente"],
+        "contexto": ["pródromo_viral_recente"]
+      },
+      "dispneia": {
+        "tipo": ["aos_esforços", "em_repouso"],
+        "progressão": ["ortopneia_e_DPN_em_casos_graves"]
+      },
+      "fadiga": {
+        "tipo": ["desproporcional_ao_esforço"],
+        "temporalidade": ["persiste_semanas_a_meses"]
+      }
+    },
+    "discriminadores": [
+      "paciente jovem com pródromo viral e dor torácica com troponina elevada e coronárias normais",
+      "taquicardia desproporcional à febre",
+      "ECG com alterações difusas de ST-T que não respeitam território coronariano",
+      "RNM cardíaca com realce subepicárdico/mesoparietal"
+    ],
+    "scoring": {
+      "sintomas": {
+        "dor_toracica": { "peso_base": 1.0 },
+        "dispneia": { "peso_base": 0.8 },
+        "palpitacao": { "peso_base": 0.7 },
+        "sincope": { "peso_base": 0.5 },
+        "fadiga": { "peso_base": 0.7 },
+        "febre": { "peso_base": 0.8 },
+        "mialgia": { "peso_base": 0.5 }
+      },
+      "regras_bonificacao": [
+        {
+          "condicao": { "contexto": "prodomo_viral" },
+          "bonus": 1.5,
+          "justificativa": "Pródromo viral recente é o contexto clínico mais sugestivo de miocardite"
+        },
+        {
+          "condicao": {
+            "operador": "AND",
+            "criterios": [
+              { "sintoma": "febre" },
+              { "sintoma": "dor_toracica" }
+            ]
+          },
+          "bonus": 0.8,
+          "justificativa": "Febre associada a dor torácica em contexto viral sugere miopericardite"
+        },
+        {
+          "condicao": {
+            "operador": "AND",
+            "criterios": [
+              { "sintoma": "palpitacao" },
+              { "sintoma": "febre" }
+            ]
+          },
+          "bonus": 0.5,
+          "justificativa": "Taquicardia desproporcional à febre é achado clássico de miocardite"
+        }
+      ],
+      "regras_exclusao": [],
+      "fatores_risco": {}
+    }
+  },
+
+  "pericardite": {
+    "nome_exibicao": "Pericardite",
+    "sigla": null,
+    "sinais": [
+      "atrito_pericárdico", "bulhas_hipofonéticas", "taquicardia",
+      "pulso_paradoxal", "tríade_de_Beck"
+    ],
+    "qualificadores_referencia": {
+      "dor_toracica": {
+        "tipo": ["pleurítica", "aguda", "lancinante", "pontada"],
+        "localização": ["precordial", "retroesternal"],
+        "irradiação": ["trapézio", "pescoço", "ombros", "dorso"],
+        "duração": ["horas_a_dias"],
+        "fatores_piora": ["inspiração_profunda", "tosse", "deglutição", "decúbito_dorsal", "rotação_do_tronco"],
+        "fatores_alívio": ["sentar_inclinado_para_frente"],
+        "valor_discriminativo": "irradiação para trapézio praticamente patognomônica"
+      },
+      "dispneia": {
+        "tipo": ["por_derrame_pericárdico_volumoso", "por_tamponamento"],
+        "fatores_alívio": ["sentar_inclinado_para_frente"]
+      }
+    },
+    "discriminadores": [
+      "dor pleurítica que melhora sentado inclinado para frente e piora em decúbito",
+      "irradiação para trapézio (praticamente patognomônica)",
+      "atrito pericárdico (patognomônico quando presente)",
+      "ECG com elevação difusa e côncava de ST sem alterações recíprocas e depressão de PR"
+    ],
+    "scoring": {
+      "sintomas": {
+        "dor_toracica": { "peso_base": 1.0 },
+        "febre": { "peso_base": 0.7 },
+        "dispneia": { "peso_base": 0.6 },
+        "tosse_seca_noturna": { "peso_base": 0.4 },
+        "fadiga": { "peso_base": 0.4 }
+      },
+      "regras_bonificacao": [
+        {
+          "condicao": { "qualificador": "dor_toracica.tipo_pleuritica" },
+          "bonus": 1.0,
+          "justificativa": "Dor pleurítica é o tipo característico da pericardite"
+        },
+        {
+          "condicao": { "qualificador": "dor_toracica.piora_decubito" },
+          "bonus": 0.8,
+          "justificativa": "Piora em decúbito dorsal é altamente sugestiva de pericardite"
+        },
+        {
+          "condicao": { "qualificador": "dor_toracica.piora_respiracao" },
+          "bonus": 0.6,
+          "justificativa": "Piora com inspiração profunda indica componente pleurítico/pericárdico"
+        },
+        {
+          "condicao": { "qualificador": "dor_toracica.alivio_inclinado" },
+          "bonus": 1.0,
+          "justificativa": "Alívio ao inclinar-se para frente é posição antálgica clássica da pericardite"
+        },
+        {
+          "condicao": { "qualificador": "dor_toracica.irradiacao_trapezio" },
+          "bonus": 1.2,
+          "justificativa": "Irradiação para trapézio é praticamente patognomônica (inervação pelo nervo frênico)"
+        }
+      ],
+      "regras_exclusao": [
+        {
+          "condicao": { "qualificador": "dor_toracica.tipo_opressiva" },
+          "penalidade": -0.5,
+          "justificativa": "Dor opressiva é mais sugestiva de isquemia que de pericardite"
+        }
+      ],
+      "fatores_risco": {}
+    }
+  },
+
+  "cardiomiopatia_hipertrofica": {
+    "nome_exibicao": "Cardiomiopatia Hipertrófica",
+    "sigla": "CMH",
+    "sinais": [
+      "sopro_sistólico_ejetivo_BEE", "sopro_aumenta_com_Valsalva",
+      "sopro_regurgitação_mitral", "pulso_bisferiens",
+      "B4_proeminente", "B2_preservada", "ictus_sustentado_vigoroso"
+    ],
+    "qualificadores_referencia": {
+      "dispneia": {
+        "tipo": ["aos_esforços", "progressiva"],
+        "mecanismo": ["disfunção_diastólica_com_pressões_de_enchimento_elevadas"]
+      },
+      "dor_toracica": {
+        "tipo": ["opressiva", "retroesternal"],
+        "contexto": ["coronárias_geralmente_normais"],
+        "mecanismo": ["hipertrofia_e_compressão_artérias_septais_e_obstrução_VSVE"]
+      },
+      "sincope": {
+        "tipo": ["síncope_de_esforço", "pré-síncope"],
+        "valor_discriminativo": "marcador de risco de morte súbita",
+        "mecanismo": ["obstrução_dinâmica_VSVE", "arritmia_ventricular"]
+      }
+    },
+    "discriminadores": [
+      "sopro sistólico ejetivo em BEE que AUMENTA com Valsalva (virtualmente diagnóstico)",
+      "pulso bisferiens (diferente do parvus et tardus da EAo)",
+      "B4 proeminente com B2 preservada",
+      "sopro que NÃO irradia para carótidas",
+      "história familiar de morte súbita em jovens",
+      "causa mais comum de morte súbita em atletas jovens"
+    ],
+    "scoring": {
+      "sintomas": {
+        "dispneia": { "peso_base": 0.8 },
+        "dor_toracica": { "peso_base": 0.8 },
+        "sincope": { "peso_base": 1.0 },
+        "palpitacao": { "peso_base": 0.6 }
+      },
+      "regras_bonificacao": [
+        {
+          "condicao": { "contexto": "historico_familiar_morte_subita" },
+          "bonus": 1.5,
+          "justificativa": "História familiar de morte súbita é o principal fator de risco para CMH"
+        },
+        {
+          "condicao": {
+            "operador": "AND",
+            "criterios": [
+              { "sintoma": "sincope" },
+              { "contexto": "esforco_fisico" }
+            ]
+          },
+          "bonus": 0.8,
+          "justificativa": "Síncope de esforço é marcador de risco de morte súbita na CMH"
+        }
+      ],
+      "regras_exclusao": [],
+      "fatores_risco": {}
+    }
+  },
+
+  "intersecoes": {
+    "dor_toracica": ["doenca_arterial_coronariana", "estenose_aortica", "miocardite", "pericardite", "cardiomiopatia_hipertrofica"],
+    "dispneia": ["doenca_arterial_coronariana", "insuficiencia_cardiaca", "fibrilacao_atrial", "estenose_aortica", "hipertensao_arterial_sistemica", "miocardite", "pericardite", "cardiomiopatia_hipertrofica"],
+    "sincope": ["doenca_arterial_coronariana", "fibrilacao_atrial", "estenose_aortica", "miocardite", "cardiomiopatia_hipertrofica"],
+    "palpitacao": ["insuficiencia_cardiaca", "fibrilacao_atrial", "miocardite", "cardiomiopatia_hipertrofica"],
+    "fadiga": ["doenca_arterial_coronariana", "insuficiencia_cardiaca", "fibrilacao_atrial", "miocardite", "pericardite"],
+    "tontura": ["fibrilacao_atrial", "hipertensao_arterial_sistemica"],
+    "edema_membros_inferiores": ["insuficiencia_cardiaca"],
+    "febre": ["miocardite", "pericardite"]
+  },
+
+  "ambiguidades_clinicas": [
+    {
+      "par": ["doenca_arterial_coronariana", "estenose_aortica"],
+      "sobreposicao": "angina de esforço idêntica",
+      "diferenciacao": "EAo apresenta sopro sistólico ejetivo em foco aórtico e pulso parvus et tardus"
+    },
+    {
+      "par": ["doenca_arterial_coronariana", "cardiomiopatia_hipertrofica"],
+      "sobreposicao": "angina de esforço com dor opressiva retroesternal",
+      "diferenciacao": "CMH tem sopro que aumenta com Valsalva e coronárias normais"
+    },
+    {
+      "par": ["doenca_arterial_coronariana", "pericardite"],
+      "sobreposicao": "dor torácica e alterações de ST no ECG",
+      "diferenciacao": "pericardite tem dor pleurítica que melhora inclinado e piora com respiração"
+    },
+    {
+      "par": ["doenca_arterial_coronariana", "miocardite"],
+      "sobreposicao": "dor torácica com troponina elevada e alterações de ECG",
+      "diferenciacao": "miocardite ocorre em jovens com pródromo viral e coronárias normais"
+    },
+    {
+      "par": ["estenose_aortica", "cardiomiopatia_hipertrofica"],
+      "sobreposicao": "sopro sistólico ejetivo com angina e síncope de esforço",
+      "diferenciacao": "Valsalva DIMINUI sopro na EAo e AUMENTA na CMH; EAo irradia para carótidas, CMH não"
+    },
+    {
+      "par": ["insuficiencia_cardiaca", "fibrilacao_atrial"],
+      "sobreposicao": "FA pode causar IC (taquicardiomiopatia) e IC pode causar FA; coexistência muito frequente",
+      "diferenciacao": "pulso irregularmente irregular e déficit de pulso sugerem FA como componente"
+    },
+    {
+      "par": ["miocardite", "pericardite"],
+      "sobreposicao": "miopericardite sobrepõe ambos os quadros",
+      "diferenciacao": "miocardite isolada causa disfunção sistólica; pericardite isolada não"
+    },
+    {
+      "par": ["hipertensao_arterial_sistemica", "insuficiencia_cardiaca"],
+      "sobreposicao": "HAS é a principal causa de IC com fração de ejeção preservada",
+      "diferenciacao": "sintomas de IC podem dominar o quadro; PA elevada com B4 e ictus sustentado sem desvio sugere HAS como etiologia"
+    }
+  ],
+
+  "red_flags": [
+    {
+      "nome": "SCA provável",
+      "condicao": {
+        "operador": "AND",
+        "criterios": [
+          { "sintoma": "dor_toracica" },
+          { "qualificador": "dor_toracica.tipo_opressiva" },
+          {
+            "operador": "OR",
+            "criterios": [
+              { "sintoma": "sudorese" },
+              { "sintoma": "nausea" },
+              { "sintoma": "dispneia" }
+            ]
+          }
+        ]
+      },
+      "mensagem": "ALERTA: Quadro sugestivo de Síndrome Coronariana Aguda. Avaliação emergencial recomendada.",
+      "prioridade": "URGENTE"
+    },
+    {
+      "nome": "IC descompensada",
+      "condicao": {
+        "operador": "AND",
+        "criterios": [
+          { "sintoma": "dispneia" },
+          { "sintoma": "edema_membros_inferiores" },
+          {
+            "operador": "OR",
+            "criterios": [
+              { "sintoma": "ortopneia" },
+              { "sintoma": "dispneia_paroxistica_noturna" }
+            ]
+          }
+        ]
+      },
+      "mensagem": "ALERTA: Sinais de insuficiência cardíaca descompensada. Avaliação urgente recomendada.",
+      "prioridade": "URGENTE"
+    },
+    {
+      "nome": "Síncope de esforço",
+      "condicao": {
+        "operador": "AND",
+        "criterios": [
+          { "sintoma": "sincope" },
+          { "contexto": "esforco_fisico" }
+        ]
+      },
+      "mensagem": "ALERTA: Síncope de esforço pode indicar estenose aórtica grave ou cardiomiopatia hipertrófica. Investigação cardiológica urgente.",
+      "prioridade": "URGENTE"
+    },
+    {
+      "nome": "Pericardite com sinais de tamponamento",
+      "condicao": {
+        "operador": "AND",
+        "criterios": [
+          { "sintoma": "dor_toracica" },
+          { "qualificador": "dor_toracica.tipo_pleuritica" },
+          { "sintoma": "dispneia" },
+          { "sintoma": "sincope" }
+        ]
+      },
+      "mensagem": "ALERTA: Pericardite com dispneia e síncope sugere possível tamponamento cardíaco. Avaliação emergencial.",
+      "prioridade": "URGENTE"
+    },
+    {
+      "nome": "Miocardite fulminante",
+      "condicao": {
+        "operador": "AND",
+        "criterios": [
+          { "contexto": "prodomo_viral" },
+          { "sintoma": "dor_toracica" },
+          { "sintoma": "dispneia" },
+          { "sintoma": "sincope" }
+        ]
+      },
+      "mensagem": "ALERTA: Pródromo viral com dor torácica, dispneia e síncope sugere miocardite fulminante. Avaliação emergencial.",
+      "prioridade": "URGENTE"
+    }
+  ]
+}
