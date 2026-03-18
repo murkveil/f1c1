@@ -33,11 +33,13 @@ from cardio_extrator.modelos import (  # noqa: E402
 from cardio_extrator.io import (  # noqa: E402
     ARQUIVO_MAPA,
     ARQUIVO_RELATOS,
-    CHAVES_META,
     DIRETORIO_DADOS,
     carregar_mapa,
     carregar_relatos,
 )
+
+# inferência (CHAVES_META movida para inferencia)
+from cardio_extrator.inferencia import CHAVES_META  # noqa: E402
 
 # preprocessamento
 from cardio_extrator.preprocessamento import normalizar  # noqa: E402

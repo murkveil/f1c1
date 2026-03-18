@@ -40,6 +40,23 @@ from cardio_extrator.pipeline import analisar_relato
 from cardio_extrator.preprocessamento import normalizar
 
 
+def _extrair(texto: str):
+    """Helper: normaliza, tokeniza e extrai sintomas de uma vez."""
+    texto_norm = normalizar(texto)
+    tokens, posicoes = _tokenizar(texto_norm)
+    return extrair_sintomas(texto_norm, tokens, posicoes)
+
+
+def _extrair_quals(texto: str, presentes: set[str]):
+    """Helper: normaliza e extrai qualificadores."""
+    return extrair_qualificadores(normalizar(texto), presentes)
+
+
+def _norm(fn, texto, *args):
+    """Helper: normaliza texto e delega a qualquer extrator."""
+    return fn(normalizar(texto), *args)
+
+
 @pytest.fixture
 def mapa():
     """Carrega o mapa de conhecimento real."""
@@ -55,7 +72,7 @@ class TestNegacao:
 
     def test_negacao_simples(self):
         """'Não sinto dor no peito' → dor_toracica ausente."""
-        achados = extrair_sintomas("Não sinto dor no peito")
+        achados = _extrair("Não sinto dor no peito")
         dor = [a for a in achados if a.sintoma == "dor_toracica"]
         assert len(dor) == 1
         assert dor[0].presente is False
@@ -63,7 +80,7 @@ class TestNegacao:
 
     def test_negacao_com_afirmacao(self):
         """'Nego dor no peito mas sinto falta de ar' → dor=False, dispneia=True."""
-        achados = extrair_sintomas(
+        achados = _extrair(
             "Nego dor no peito mas sinto falta de ar intensa"
         )
         sintomas = {a.sintoma: a.presente for a in achados}
@@ -72,7 +89,7 @@ class TestNegacao:
 
     def test_dupla_negacao(self):
         """'Não posso negar que sinto um aperto no peito' → dor_toracica=True."""
-        achados = extrair_sintomas(
+        achados = _extrair(
             "Não posso negar que sinto um aperto no peito"
         )
         dor = [a for a in achados if a.sintoma == "dor_toracica"]
@@ -81,14 +98,14 @@ class TestNegacao:
 
     def test_negacao_com_sem(self):
         """'Sem queixas de tontura' → tontura ausente."""
-        achados = extrair_sintomas("Sem queixas de tontura")
+        achados = _extrair("Sem queixas de tontura")
         tontura = [a for a in achados if a.sintoma == "tontura"]
         assert len(tontura) == 1
         assert tontura[0].presente is False
 
     def test_delimitador_escopo_conjuncao(self):
         """Negação não atravessa conjunção 'e'."""
-        achados = extrair_sintomas(
+        achados = _extrair(
             "Cansaço extremo que não melhora com repouso e falta de ar"
         )
         dispneia = [a for a in achados if a.sintoma == "dispneia"]
@@ -97,7 +114,7 @@ class TestNegacao:
 
     def test_delimitador_escopo_virgula(self):
         """Negação não atravessa vírgula."""
-        achados = extrair_sintomas(
+        achados = _extrair(
             "Não tenho náusea, mas sinto dor no peito"
         )
         dor = [a for a in achados if a.sintoma == "dor_toracica"]
@@ -114,19 +131,19 @@ class TestTemporal:
 
     def test_inicio_ha_dias(self):
         """'Dor no peito há 3 dias' → inicio='3 dias'."""
-        temporal = extrair_temporal("Dor no peito há 3 dias")
+        temporal = _norm(extrair_temporal,"Dor no peito há 3 dias")
         assert "inicio" in temporal
         assert "3 dias" in temporal["inicio"]
 
     def test_inicio_ha_texto(self):
         """'Há duas semanas sinto falta de ar' → inicio contém 'semanas'."""
-        temporal = extrair_temporal("Há duas semanas sinto falta de ar")
+        temporal = _norm(extrair_temporal,"Há duas semanas sinto falta de ar")
         assert "inicio" in temporal
         assert "semanas" in temporal["inicio"]
 
     def test_duracao(self):
         """'Dor que dura vários minutos' → duracao contém 'minutos'."""
-        temporal = extrair_temporal(
+        temporal = _norm(extrair_temporal,
             "Batimentos irregulares que duram vários minutos"
         )
         assert "duracao" in temporal
@@ -134,7 +151,7 @@ class TestTemporal:
 
     def test_progressao_piorando(self):
         """'Falta de ar que vem piorando' → progressao='piorando'."""
-        temporal = extrair_temporal(
+        temporal = _norm(extrair_temporal,
             "Sinto falta de ar que vem piorando nas últimas semanas"
         )
         assert "progressao" in temporal
@@ -142,7 +159,7 @@ class TestTemporal:
 
     def test_frequencia(self):
         """'Toda noite acordo sem ar' → frequencia='toda noite'."""
-        temporal = extrair_temporal("Toda noite acordo sem ar")
+        temporal = _norm(extrair_temporal,"Toda noite acordo sem ar")
         assert "frequencia" in temporal
         assert "toda noite" in temporal["frequencia"]
 
@@ -186,20 +203,21 @@ class TestScoring:
 
     def test_normalizacao(self, mapa):
         """Score normalizado deve estar entre 0.0 e 1.0."""
-        achados = extrair_sintomas(
+        achados = _extrair(
             "Sinto dor forte no peito, falta de ar, tontura e desmaiei"
         )
+        presentes = achados_presentes(achados)
         diagnosticos = pontuar_doencas(
-            achados, {}, {}, {}, mapa,
+            presentes, {}, {}, {}, mapa,
         )
         for diag in diagnosticos:
             assert 0.0 <= diag.score_normalizado <= 1.0
 
     def test_penalidade_aplicada(self, mapa):
         """Dor opressiva deve penalizar pericardite."""
-        achados = extrair_sintomas("Sinto dor no peito como um aperto forte")
+        achados = _extrair("Sinto dor no peito como um aperto forte")
         presentes = achados_presentes(achados)
-        qualificadores = extrair_qualificadores(
+        qualificadores = _extrair_quals(
             "Sinto dor no peito como um aperto forte", presentes,
         )
         pericardite_cfg = mapa["pericardite"]
@@ -305,8 +323,8 @@ class TestNormalizacao:
 
     def test_confianca_baixa(self, mapa):
         """Score normalizado < 0.3 deve ter confiança 'baixa'."""
-        achados = extrair_sintomas("Sinto uma leve fadiga")
-        diagnosticos = pontuar_doencas(achados, {}, {}, {}, mapa)
+        achados = _extrair("Sinto uma leve fadiga")
+        diagnosticos = pontuar_doencas(achados_presentes(achados), {}, {}, {}, mapa)
         baixas = [d for d in diagnosticos if d.confianca == "baixa"]
         for d in baixas:
             assert d.score_normalizado < 0.3
@@ -317,10 +335,10 @@ class TestNormalizacao:
             "Há duas semanas meu coração começou a disparar do nada, "
             "com batimentos irregulares. Sinto tontura e fadiga."
         )
-        achados = extrair_sintomas(texto)
+        achados = _extrair(texto)
         presentes = achados_presentes(achados)
-        quals = extrair_qualificadores(texto, presentes)
-        diagnosticos = pontuar_doencas(achados, quals, {}, {}, mapa)
+        quals = _extrair_quals(texto, presentes)
+        diagnosticos = pontuar_doencas(presentes, quals, {}, {}, mapa)
         fa = [d for d in diagnosticos if d.doenca == "fibrilacao_atrial"]
         assert len(fa) == 1
         assert fa[0].confianca == "alta"
@@ -336,9 +354,9 @@ class TestColoquialismo:
 
     def test_contracoes_pro(self):
         """'Dor que vai pro braço' → irradiação MSE detectada."""
-        achados = extrair_sintomas("Dor no peito que vai pro braço esquerdo")
+        achados = _extrair("Dor no peito que vai pro braço esquerdo")
         presentes = achados_presentes(achados)
-        quals = extrair_qualificadores(
+        quals = _extrair_quals(
             "Dor no peito que vai pro braço esquerdo", presentes,
         )
         assert "dor_toracica" in presentes
@@ -346,7 +364,7 @@ class TestColoquialismo:
 
     def test_contracoes_to(self):
         """'Tô sentindo dor forte no peito' → dor_toracica=True."""
-        achados = extrair_sintomas("Tô sentindo uma dor forte no peito")
+        achados = _extrair("Tô sentindo uma dor forte no peito")
         presentes = achados_presentes(achados)
         assert "dor_toracica" in presentes
 
@@ -365,7 +383,7 @@ class TestColoquialismo:
 
     def test_dor_com_palavras_intermediarias(self):
         """'Sinto um aperto forte no meio do peito' → dor_toracica."""
-        achados = extrair_sintomas(
+        achados = _extrair(
             "Sinto um aperto forte no meio do peito"
         )
         presentes = achados_presentes(achados)
@@ -373,7 +391,7 @@ class TestColoquialismo:
 
     def test_dpn_madrugada(self):
         """'Acordo de madrugada sem conseguir respirar' → DPN detectada."""
-        achados = extrair_sintomas(
+        achados = _extrair(
             "Acordo de madrugada sem conseguir respirar direito"
         )
         presentes = achados_presentes(achados)
@@ -389,22 +407,22 @@ class TestFatoresRisco:
 
     def test_tabagismo(self):
         """Detecção de tabagismo."""
-        fatores = extrair_fatores_risco("Sou fumante há 20 anos")
+        fatores = _norm(extrair_fatores_risco,"Sou fumante há 20 anos")
         assert fatores.get("tabagismo") is True
 
     def test_diabetes(self):
         """Detecção de diabetes."""
-        fatores = extrair_fatores_risco("Tenho diabetes tipo 2")
+        fatores = _norm(extrair_fatores_risco,"Tenho diabetes tipo 2")
         assert fatores.get("diabetes") is True
 
     def test_hipertensao(self):
         """Detecção de hipertensão."""
-        fatores = extrair_fatores_risco("Minha pressão é alta")
+        fatores = _norm(extrair_fatores_risco,"Minha pressão é alta")
         assert fatores.get("hipertensao") is True
 
     def test_multiplos_fatores(self):
         """Detecção de múltiplos fatores simultâneos."""
-        fatores = extrair_fatores_risco(
+        fatores = _norm(extrair_fatores_risco,
             "Sou fumante, tenho diabetes e colesterol alto"
         )
         assert fatores.get("tabagismo") is True
@@ -413,7 +431,7 @@ class TestFatoresRisco:
 
     def test_sem_fatores(self):
         """Relato sem fatores de risco deve retornar vazio."""
-        fatores = extrair_fatores_risco("Sinto dor no peito há dois dias")
+        fatores = _norm(extrair_fatores_risco,"Sinto dor no peito há dois dias")
         assert len(fatores) == 0
 
 
@@ -422,18 +440,18 @@ class TestMedicacoes:
 
     def test_anti_hipertensivo(self):
         """Detecção de anti-hipertensivo."""
-        meds = extrair_medicacoes("Tomo losartana 50mg todo dia")
+        meds = _norm(extrair_medicacoes,"Tomo losartana 50mg todo dia")
         assert "anti_hipertensivo" in meds
         assert any("losartana" in m for m in meds["anti_hipertensivo"])
 
     def test_estatina(self):
         """Detecção de estatina."""
-        meds = extrair_medicacoes("Uso atorvastatina para o colesterol")
+        meds = _norm(extrair_medicacoes,"Uso atorvastatina para o colesterol")
         assert "estatina" in meds
 
     def test_multiplas_classes(self):
         """Detecção de múltiplas classes de medicação."""
-        meds = extrair_medicacoes(
+        meds = _norm(extrair_medicacoes,
             "Tomo losartana, aspirina e sinvastatina"
         )
         assert "anti_hipertensivo" in meds
@@ -442,7 +460,7 @@ class TestMedicacoes:
 
     def test_sem_medicacoes(self):
         """Relato sem medicações deve retornar vazio."""
-        meds = extrair_medicacoes("Sinto tontura e dor de cabeça")
+        meds = _norm(extrair_medicacoes,"Sinto tontura e dor de cabeça")
         assert len(meds) == 0
 
 
