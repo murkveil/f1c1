@@ -1,24 +1,32 @@
-"""Constantes do motor de negação contextual."""
+"""Constantes pré-compiladas do motor de negação contextual."""
 
-NEGADORES: list[str] = [
-    r"\bnão\b", r"\bnego\b", r"\bnega\b", r"\bsem\b",
-    r"\bnunca\b", r"\bnenhum[a]?\b", r"\bausência\s+de\b",
+import re
+
+NEGADORES: list[re.Pattern[str]] = [
+    re.compile(r"\bnão\b"), re.compile(r"\bnego\b"),
+    re.compile(r"\bnega\b"), re.compile(r"\bsem\b"),
+    re.compile(r"\bnunca\b"), re.compile(r"\bnenhum[a]?\b"),
+    re.compile(r"\bausência\s+de\b"),
 ]
 
-RESTAURADORES: list[str] = [
-    r"\bmas\b", r"\bporém\b", r"\bentretanto\b", r"\bcontudo\b",
-    r"\btodavia\b", r"\bno\s+entanto\b", r"\bagora\s+sim\b",
-    r"\brecentemente\b",
+RESTAURADORES: list[re.Pattern[str]] = [
+    re.compile(r"\bmas\b"), re.compile(r"\bporém\b"),
+    re.compile(r"\bentretanto\b"), re.compile(r"\bcontudo\b"),
+    re.compile(r"\btodavia\b"), re.compile(r"\bno\s+entanto\b"),
+    re.compile(r"\bagora\s+sim\b"), re.compile(r"\brecentemente\b"),
 ]
 
-DUPLA_NEGACAO: list[str] = [
-    r"\bnão\s+posso\s+negar\b",
-    r"\bnão\s+nego\b",
-    r"\bimpossível\s+negar\b",
+DUPLA_NEGACAO: list[re.Pattern[str]] = [
+    re.compile(r"\bnão\s+posso\s+negar\b"),
+    re.compile(r"\bnão\s+nego\b"),
+    re.compile(r"\bimpossível\s+negar\b"),
 ]
 
 JANELA_NEGACAO: int = 5
 
-DELIMITADORES_ESCOPO: list[str] = [
-    r"\be\b", r"\bou\b", r",", r"\.", r";", r":", r"\bque\s+(?!não)",
+DELIMITADORES_ESCOPO: list[re.Pattern[str]] = [
+    re.compile(r"\be\b"), re.compile(r"\bou\b"),
+    re.compile(r","), re.compile(r"\."),
+    re.compile(r";"), re.compile(r":"),
+    re.compile(r"\bque\s+(?!não)"),
 ]

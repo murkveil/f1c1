@@ -1,39 +1,50 @@
-"""Expressões regulares para detecção de medicações cardiovasculares."""
+"""Expressões regulares pré-compiladas para detecção de medicações cardiovasculares."""
 
-EXPRESSOES_MEDICACOES: dict[str, list[str]] = {
+import re
+
+EXPRESSOES_MEDICACOES: dict[str, list[re.Pattern[str]]] = {
     "anti_hipertensivo": [
-        r"losartana", r"enalapril", r"amlodipina", r"atenolol",
-        r"captopril", r"valsartana", r"nifedipina", r"metoprolol",
-        r"propranolol", r"carvedilol", r"hidralazina",
-        r"remédio\s+(?:\w+\s+){0,2}pressão",
+        re.compile(r"losartana"), re.compile(r"enalapril"),
+        re.compile(r"amlodipina"), re.compile(r"atenolol"),
+        re.compile(r"captopril"), re.compile(r"valsartana"),
+        re.compile(r"nifedipina"), re.compile(r"metoprolol"),
+        re.compile(r"propranolol"), re.compile(r"carvedilol"),
+        re.compile(r"hidralazina"),
+        re.compile(r"remédio\s+(?:\w+\s+){0,2}pressão"),
     ],
     "anticoagulante": [
-        r"varfarina", r"rivaroxabana", r"apixabana",
-        r"dabigatrana", r"edoxabana", r"heparina",
-        r"marevan", r"xarelto", r"eliquis",
+        re.compile(r"varfarina"), re.compile(r"rivaroxabana"),
+        re.compile(r"apixabana"), re.compile(r"dabigatrana"),
+        re.compile(r"edoxabana"), re.compile(r"heparina"),
+        re.compile(r"marevan"), re.compile(r"xarelto"),
+        re.compile(r"eliquis"),
     ],
     "antiplaquetario": [
-        r"\baas\b", r"aspirina", r"clopidogrel",
-        r"ticagrelor", r"prasugrel",
+        re.compile(r"\baas\b"), re.compile(r"aspirina"),
+        re.compile(r"clopidogrel"), re.compile(r"ticagrelor"),
+        re.compile(r"prasugrel"),
     ],
     "estatina": [
-        r"sinvastatina", r"atorvastatina", r"rosuvastatina",
-        r"pravastatina", r"fluvastatina",
-        r"remédio\s+(?:\w+\s+){0,2}colesterol",
+        re.compile(r"sinvastatina"), re.compile(r"atorvastatina"),
+        re.compile(r"rosuvastatina"), re.compile(r"pravastatina"),
+        re.compile(r"fluvastatina"),
+        re.compile(r"remédio\s+(?:\w+\s+){0,2}colesterol"),
     ],
     "diuretico": [
-        r"furosemida", r"hidroclorotiazida", r"espironolactona",
-        r"indapamida", r"clortalidona",
-        r"lasix",
+        re.compile(r"furosemida"), re.compile(r"hidroclorotiazida"),
+        re.compile(r"espironolactona"), re.compile(r"indapamida"),
+        re.compile(r"clortalidona"), re.compile(r"lasix"),
     ],
     "antidiabetico": [
-        r"metformina", r"glibenclamida", r"gliclazida",
-        r"insulina", r"glargina", r"dapagliflozina",
-        r"empagliflozina", r"sitagliptina",
-        r"remédio\s+(?:\w+\s+){0,2}(?:diabetes|açúcar|glicemia)",
+        re.compile(r"metformina"), re.compile(r"glibenclamida"),
+        re.compile(r"gliclazida"), re.compile(r"insulina"),
+        re.compile(r"glargina"), re.compile(r"dapagliflozina"),
+        re.compile(r"empagliflozina"), re.compile(r"sitagliptina"),
+        re.compile(r"remédio\s+(?:\w+\s+){0,2}(?:diabetes|açúcar|glicemia)"),
     ],
     "antiarritmico": [
-        r"amiodarona", r"sotalol", r"propafenona",
-        r"flecainida", r"digoxina",
+        re.compile(r"amiodarona"), re.compile(r"sotalol"),
+        re.compile(r"propafenona"), re.compile(r"flecainida"),
+        re.compile(r"digoxina"),
     ],
 }
