@@ -18,27 +18,26 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
 
-from extracao_sintomas import (
-    ARQUIVO_MAPA,
-    AchadoClinico,
-    ResultadoAnalise,
+from cardio_extrator.extratores import (
     achados_presentes,
-    analisar_relato,
-    avaliar_condicao,
-    avaliar_red_flags,
-    carregar_mapa,
-    detectar_negacao,
     extrair_contexto,
     extrair_fatores_risco,
     extrair_medicacoes,
     extrair_qualificadores,
     extrair_sintomas,
     extrair_temporal,
-    normalizar,
+)
+from cardio_extrator.inferencia import (
+    avaliar_condicao,
+    avaliar_red_flags,
     pontuar_doenca,
     pontuar_doencas,
-    _tokenizar,
 )
+from cardio_extrator.io import ARQUIVO_MAPA, carregar_mapa
+from cardio_extrator.modelos import AchadoClinico, ResultadoAnalise
+from cardio_extrator.negacao import _tokenizar, detectar_negacao
+from cardio_extrator.pipeline import analisar_relato
+from cardio_extrator.preprocessamento import normalizar
 
 
 @pytest.fixture
@@ -561,7 +560,7 @@ class TestIntegracao:
 
     def test_pipeline_10_relatos(self, mapa):
         """Os 10 relatos originais devem produzir diagnósticos coerentes."""
-        from extracao_sintomas import ARQUIVO_RELATOS, carregar_relatos
+        from cardio_extrator.io import ARQUIVO_RELATOS, carregar_relatos
         relatos = carregar_relatos(ARQUIVO_RELATOS)
         assert len(relatos) == 10
 
