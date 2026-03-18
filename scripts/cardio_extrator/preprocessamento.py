@@ -33,14 +33,33 @@ CORRECOES_ORTOGRAFICAS: dict[str, str] = {
     "desmaiei": "desmaiei",
 }
 
+_RE_ESPACOS = re.compile(r"\s+")
+
+_PADRAO_CONTRACOES = re.compile(
+    "|".join(f"({padrao})" for padrao, _ in CONTRACOES)
+)
+_SUBST_CONTRACOES = [subst for _, subst in CONTRACOES]
+
+
+def _substituir_contracao(m: re.Match) -> str:
+    for i, g in enumerate(m.groups()):
+        if g is not None:
+            return _SUBST_CONTRACOES[i]
+    return m.group()
+
+
+_PADRAO_CORRECOES = re.compile(
+    r"\b(" + "|".join(re.escape(k) for k in CORRECOES_ORTOGRAFICAS) + r")\b"
+)
+
 
 def normalizar(texto: str) -> str:
     """Normaliza texto: minúsculo, contrações expandidas, correções ortográficas.
 
-    Aplica pré-processamento em 3 etapas:
-    1. Conversão para minúsculo e simplificação de espaços
-    2. Expansão de contrações coloquiais (pro->para o, tô->estou)
-    3. Correção de erros ortográficos comuns em relatos de pacientes
+    Executa 4 operações regex independente do tamanho dos dicionários:
+    1. Simplificação de espaços
+    2. Expansão de contrações coloquiais (1 passada)
+    3. Correção de erros ortográficos (1 passada)
 
     Args:
         texto: Texto original do relato.
@@ -49,12 +68,9 @@ def normalizar(texto: str) -> str:
         Texto normalizado pronto para extração por regex.
     """
     texto = texto.lower()
-    texto = re.sub(r"\s+", " ", texto).strip()
-
-    for padrao, subst in CONTRACOES:
-        texto = re.sub(padrao, subst, texto)
-
-    for errado, correto in CORRECOES_ORTOGRAFICAS.items():
-        texto = re.sub(r"\b" + re.escape(errado) + r"\b", correto, texto)
-
+    texto = _RE_ESPACOS.sub(" ", texto).strip()
+    texto = _PADRAO_CONTRACOES.sub(_substituir_contracao, texto)
+    texto = _PADRAO_CORRECOES.sub(
+        lambda m: CORRECOES_ORTOGRAFICAS[m.group()], texto,
+    )
     return texto

@@ -4,8 +4,7 @@ from __future__ import annotations
 
 import logging
 
-from .extratores import achados_presentes
-from .modelos import AchadoClinico, AlertaRedFlag, ScoreDiagnostico
+from .modelos import AlertaRedFlag, ScoreDiagnostico
 
 logger = logging.getLogger("cardio_extrator")
 
@@ -101,6 +100,22 @@ def _calcular_score_maximo(scoring: dict) -> float:
     return max_sintomas + max_bonus + max_fatores
 
 
+def pre_calcular_scores_maximos(mapa: dict) -> dict[str, float]:
+    """Pré-calcula score máximo por doença. Chamar 1x após carregar mapa.
+
+    Args:
+        mapa: Mapa de conhecimento completo.
+
+    Returns:
+        Dicionário {chave_doença: score_máximo}.
+    """
+    return {
+        chave: _calcular_score_maximo(config.get("scoring", {}))
+        for chave, config in mapa.items()
+        if chave not in CHAVES_META
+    }
+
+
 def pontuar_doenca(
     doenca_config: dict,
     sintomas_presentes: set[str],
@@ -159,25 +174,26 @@ def pontuar_doenca(
 
 
 def pontuar_doencas(
-    achados: list[AchadoClinico],
+    sintomas_presentes: set[str],
     qualificadores: dict[str, dict[str, bool]],
     contexto: dict[str, bool],
     fatores_risco: dict[str, bool],
     mapa: dict,
+    scores_maximos: dict[str, float] | None = None,
 ) -> list[ScoreDiagnostico]:
     """Calcula pontuação normalizada para todas as doenças do mapa.
 
     Args:
-        achados: Achados clínicos extraídos.
+        sintomas_presentes: Sintomas confirmados (set).
         qualificadores: Qualificadores semiológicos.
         contexto: Contextos clínicos.
         fatores_risco: Fatores de risco.
         mapa: Mapa de conhecimento completo.
+        scores_maximos: Cache de scores máximos (opcional, calcula se ausente).
 
     Returns:
         Lista de ScoreDiagnostico ordenada por score normalizado (desc).
     """
-    presentes = achados_presentes(achados)
     resultados: list[ScoreDiagnostico] = []
 
     for chave, config in mapa.items():
@@ -185,13 +201,17 @@ def pontuar_doencas(
             continue
 
         score_bruto, justificativas = pontuar_doenca(
-            config, presentes, qualificadores, contexto, fatores_risco,
+            config, sintomas_presentes, qualificadores, contexto, fatores_risco,
         )
 
         if score_bruto <= 0:
             continue
 
-        score_max = _calcular_score_maximo(config.get("scoring", {}))
+        if scores_maximos is not None:
+            score_max = scores_maximos.get(chave, 0.0)
+        else:
+            score_max = _calcular_score_maximo(config.get("scoring", {}))
+
         score_norm = score_bruto / score_max if score_max > 0 else 0.0
         score_norm = min(score_norm, 1.0)
 

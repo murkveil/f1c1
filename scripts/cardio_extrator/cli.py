@@ -9,7 +9,8 @@ import sys
 from pathlib import Path
 
 from .formatacao import formatar_resultado
-from .io import ARQUIVO_MAPA, ARQUIVO_RELATOS, CHAVES_META, carregar_mapa, carregar_relatos
+from .inferencia import CHAVES_META, pre_calcular_scores_maximos
+from .io import ARQUIVO_MAPA, ARQUIVO_RELATOS, carregar_mapa, carregar_relatos
 from .modelos import ResultadoAnalise
 from .pipeline import analisar_relato
 
@@ -89,9 +90,11 @@ def main() -> None:
         "Mapa carregado: %d doenças, %d red flags", n_doencas, n_red_flags,
     )
 
+    scores_maximos = pre_calcular_scores_maximos(mapa)
+
     resultados: list[ResultadoAnalise] = []
     for relato in relatos:
-        resultados.append(analisar_relato(relato, mapa))
+        resultados.append(analisar_relato(relato, mapa, scores_maximos))
 
     saida_texto = ""
     saida_json = ""

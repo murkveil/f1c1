@@ -9,9 +9,6 @@ DIRETORIO_DADOS = Path(__file__).resolve().parent.parent.parent / "data" / "text
 ARQUIVO_RELATOS = DIRETORIO_DADOS / "sintomas_pacientes.txt"
 ARQUIVO_MAPA = DIRETORIO_DADOS / "mapa_conhecimento.json"
 
-CHAVES_META = {"intersecoes", "ambiguidades_clinicas", "red_flags"}
-
-
 def carregar_mapa(caminho: Path) -> dict:
     """Carrega o mapa de conhecimento JSON.
 
