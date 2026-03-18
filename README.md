@@ -52,6 +52,7 @@ f1c1/
 |   |   |-- sintomas_pacientes.txt            # Fase 2 - 10 relatos de pacientes
 |   |   |-- mapa_conhecimento.json            # Fase 2 - ontologia com 8 doenças e scoring declarativo
 |   |   |-- mapa_conhecimento.csv             # Fase 2 - visão tabulada (20 combinações sintoma-doença)
+|   |   |-- frases_risco.csv                  # Fase 2 - 160 frases rotuladas (alto/baixo risco)
 |   |-- visuais/
 |   |   |-- ecg/                              # Fase 1 - 50 ECGs (normal/arritmia/infarto)
 |   |   |-- raio_x_toracico/                  # Fase 1 - 50 raios-X (normal/pneumonia)
@@ -79,14 +80,22 @@ f1c1/
 |   |   |   |-- medicacoes.py                 # 7 classes de medicações
 |   |   |   |-- temporal.py                   # padrões temporais
 |   |   |   |-- negacao.py                    # constantes de negação
+|-- notebooks/
+|   |-- classificador_risco.ipynb             # Fase 2 - TF-IDF + 3 modelos de classificação
 |-- tests/
 |   |-- test_extracao.py                      # 48 testes automatizados (pytest)
+|-- docs/
+|   |-- classificador-risco-cardiovascular.md # documentação técnica do classificador
+|   |-- estrategia-compilacao-regex.md        # documentação técnica dos regex pré-compilados
 ```
 
 A documentação técnica detalhada está disponível em:
-- [`data/README.md`](data/README.md) - dicionário de variáveis, relevância clínica, governança de dados, documentação dos arquivos da Fase 2
+- [`data/README.md`](data/README.md) - dicionário de variáveis, relevância clínica, governança de dados
 - [`scripts/README.md`](scripts/README.md) - uso dos scripts, arquitetura do pacote cardio_extrator
 - [`scripts/cardio_extrator/README.md`](scripts/cardio_extrator/README.md) - decisões arquiteturais, fluxo do pipeline, como estender o sistema
+- [`tests/README.md`](tests/README.md) - cobertura dos 48 testes, como executar
+- [`docs/classificador-risco-cardiovascular.md`](docs/classificador-risco-cardiovascular.md) - TF-IDF, modelos, avaliação, limitações
+- [`docs/estrategia-compilacao-regex.md`](docs/estrategia-compilacao-regex.md) - pré-compilação de regex, arquitetura do vocabulário
 - [`tests/README.md`](tests/README.md) - cobertura dos testes, como executar
 
 ---
@@ -252,6 +261,47 @@ DIAGNÓSTICOS SUGERIDOS:
   1. Doença Arterial Coronariana (normalizado: 0.45 | confiança: moderada)
      - bônus +1.2: Padrão esforço-repouso define angina típica (critérios Diamond-Forrester)
 ```
+
+---
+
+### Parte 2c - Classificador de Risco Cardiovascular
+
+#### Objetivo
+
+Treinar um classificador de texto que analisa frases com sintomas cardiovasculares e classifica o nível de risco como "alto risco" ou "baixo risco", simulando a triagem clínica automatizada.
+
+#### Dataset
+
+O arquivo [`data/textuais/frases_risco.csv`](data/textuais/frases_risco.csv) contém 160 frases médicas rotuladas manualmente:
+
+| Propriedade | Valor |
+|-------------|-------|
+| Frases | 160 |
+| Alto risco | 81 (50.6%) |
+| Baixo risco | 79 (49.4%) |
+| Ambíguas intencionais | ~15-20% |
+
+Os critérios de rotulação seguem protocolos de triagem cardiovascular: frases com sintomas sugestivos de emergência (dor torácica opressiva, dispneia aguda, síncope, sinais de IC descompensada) recebem "alto risco"; queixas benignas ou crônicas estáveis recebem "baixo risco".
+
+#### Notebook
+
+O notebook [`notebooks/classificador_risco.ipynb`](notebooks/classificador_risco.ipynb) implementa:
+
+1. **Vetorização TF-IDF** com unigramas e bigramas (`ngram_range=(1,2)`) → matriz 160x379
+2. **3 modelos** comparados: Logistic Regression, Decision Tree, Naive Bayes
+3. **Avaliação** com Stratified 5-Fold CV: precision, recall, F1-macro por classe
+4. **Análise de coeficientes** da Logistic Regression (termos mais discriminativos)
+5. **Teste com 10 frases novas** incluindo casos ambíguos
+
+#### Resultados (Stratified 5-Fold CV)
+
+| Modelo | Acurácia | F1-macro |
+|--------|----------|----------|
+| Logistic Regression | 0.856 +/- 0.037 | 0.856 +/- 0.037 |
+| Decision Tree | 0.662 +/- 0.050 | 0.658 +/- 0.049 |
+| Naive Bayes | 0.856 +/- 0.051 | 0.856 +/- 0.051 |
+
+A documentação técnica completa (TF-IDF, hiperparâmetros, análise de coeficientes, limitações) está em [`docs/classificador-risco-cardiovascular.md`](docs/classificador-risco-cardiovascular.md).
 
 ---
 

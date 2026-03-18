@@ -14,6 +14,7 @@ data/
 |   |-- sintomas_pacientes.txt               # Fase 2 - 10 relatos de pacientes
 |   |-- mapa_conhecimento.json               # Fase 2 - ontologia (8 doenças, scoring)
 |   |-- mapa_conhecimento.csv                # Fase 2 - visão tabulada (20 combinações)
+|   |-- frases_risco.csv                     # Fase 2 - 160 frases rotuladas (alto/baixo risco)
 |-- visuais/
 |   |-- ecg/                                 # Fase 1 - 50 ECGs (.png)
 |   |-- raio_x_toracico/                     # Fase 1 - 50 raios-X (.jpeg/.jpg/.png)
@@ -303,6 +304,30 @@ Visão tabulada do mapa de conhecimento que satisfaz o formato exigido pelo enun
 | Colunas | sintoma_1, sintoma_2, sintoma_3, sintoma_4, doenca_associada |
 
 O CSV é uma projeção simplificada do JSON — o motor de inferência do `cardio_extrator` consome o JSON (que contém pesos, bônus e condições compostas), não o CSV. O CSV existe como entregável do enunciado e como referência tabulada para consulta rápida.
+
+### frases_risco.csv (Fase 2)
+
+Dataset de frases médicas rotuladas para treinamento do classificador de risco cardiovascular (`notebooks/classificador_risco.ipynb`). O notebook consome este CSV como entrada para vetorização TF-IDF e classificação binária.
+
+| Propriedade | Valor |
+|-------------|-------|
+| Formato | CSV, UTF-8, separador vírgula |
+| Linhas | 160 (+ 1 cabeçalho) |
+| Colunas | `frase`, `situacao` |
+| Alto risco | 81 (50.6%) |
+| Baixo risco | 79 (49.4%) |
+| Ambíguas intencionais | ~15-20% |
+
+O dataset inclui intencionalmente ~25-30 frases na fronteira de decisão clínica (dor torácica atípica, palpitações isoladas, tontura posicional, dispneia crônica leve em sedentário) para testar a robustez da fronteira de decisão dos classificadores e simular a incerteza real da prática clínica.
+
+Critérios de rotulação:
+
+| Rótulo | Critério |
+|--------|----------|
+| **alto risco** | Sintomas sugestivos de emergência cardiovascular: dor torácica opressiva/com irradiação, dispneia aguda, síncope, palpitações com instabilidade, sinais de IC descompensada |
+| **baixo risco** | Queixas benignas ou crônicas estáveis: dor musculoesquelética localizada, cansaço leve, incômodo passageiro, sintomas inespecíficos sem urgência |
+
+A documentação técnica completa (processo de construção, exemplos por categoria, validação do rótulo, limitações) está em [`../docs/classificador-risco-cardiovascular.md`](../docs/classificador-risco-cardiovascular.md).
 
 ---
 
