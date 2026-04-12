@@ -21,10 +21,10 @@ Documentação técnica: [`docs/raciocinio/mlp-heartbeat/`](../docs/raciocinio/m
 
 ### Dataset
 
-O dataset MIT-BIH Heartbeat não está versionado no repositório (~570MB, idêntico ao Kaggle):
+O dataset MIT-BIH Heartbeat não está versionado no repositório (~570MB, idêntico ao Kaggle). O script [`scripts/baixar_heartbeat.py`](../scripts/baixar_heartbeat.py) baixa automaticamente usando as credenciais do `.env` e verifica integridade via SHA256:
 
 ```bash
-kaggle datasets download -d shayanfazeli/heartbeat -p data/numericos/heartbeat --unzip
+python scripts/baixar_heartbeat.py
 ```
 
 ### Imagens geradas

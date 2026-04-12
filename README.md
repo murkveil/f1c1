@@ -438,8 +438,8 @@ PYTHONPATH=scripts python -m cardio_extrator
 ### Executar notebook MLP Heartbeat (Ir Além 2a)
 
 ```bash
-# baixar dataset (requer kaggle CLI configurado)
-kaggle datasets download -d shayanfazeli/heartbeat -p data/numericos/heartbeat --unzip
+# baixar dataset (usa credenciais do .env, verifica integridade via SHA256)
+python scripts/baixar_heartbeat.py
 
 # executar notebook
 cd notebooks && jupyter nbconvert --to notebook --execute mlp_heartbeat_v2.ipynb
