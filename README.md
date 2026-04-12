@@ -46,6 +46,9 @@ f1c1/
 |   |-- README.md
 |   |-- numericos/
 |   |   |-- dataset_cardiologico.csv          # Fase 1 - 300 pacientes sintéticos (18 variáveis)
+|   |   |-- heartbeat/                        # Ir Além 2a - MIT-BIH Heartbeat (Kaggle)
+|   |   |   |-- mitbih_train.csv              #   87.554 batimentos de treino
+|   |   |   |-- mitbih_test.csv               #   21.892 batimentos de teste
 |   |-- textuais/
 |   |   |-- massa_et_al_2019_prevalencia_dcv_idosos.txt
 |   |   |-- bonotto_et_al_2016_fatores_risco_dcv_mulheres.txt
@@ -80,13 +83,19 @@ f1c1/
 |   |   |   |-- medicacoes.py                 # 7 classes de medicações
 |   |   |   |-- temporal.py                   # padrões temporais
 |   |   |   |-- negacao.py                    # constantes de negação
+|-- scripts/
+|   |-- explorar_heartbeat.py                 # Ir Além 2a - inspeção do dataset MIT-BIH
 |-- notebooks/
 |   |-- classificador_risco.ipynb             # Fase 2 - TF-IDF + 3 modelos de classificação
+|   |-- mlp_heartbeat_v2.ipynb                   # Ir Além 2a - MLP Heartbeat (v2, funcional)
+|   |-- mlp_heartbeat_v1.ipynb                # Ir Além 2a - MLP Heartbeat (v1, falho - preservado)
 |-- tests/
 |   |-- test_extracao.py                      # 48 testes automatizados (pytest)
 |-- docs/
 |   |-- classificador-risco-cardiovascular.md # documentação técnica do classificador
 |   |-- estrategia-compilacao-regex.md        # documentação técnica dos regex pré-compilados
+|   |-- raciocinio/mlp-heartbeat/             # Ir Além 2a - raciocínio técnico (9 capítulos)
+|   |   |-- exemplos/                         #   scripts complementares reproduzíveis
 ```
 
 A documentação técnica detalhada está disponível em:
@@ -96,6 +105,7 @@ A documentação técnica detalhada está disponível em:
 - [`tests/README.md`](tests/README.md) - cobertura dos 48 testes, como executar
 - [`docs/classificador-risco-cardiovascular.md`](docs/classificador-risco-cardiovascular.md) - TF-IDF, modelos, avaliação, limitações
 - [`docs/estrategia-compilacao-regex.md`](docs/estrategia-compilacao-regex.md) - pré-compilação de regex, arquitetura do vocabulário
+- [`docs/raciocinio/mlp-heartbeat/`](docs/raciocinio/mlp-heartbeat/) - raciocínio técnico do Ir Além 2a (inspeção, falha v1, experimentos v2)
 - [`tests/README.md`](tests/README.md) - cobertura dos testes, como executar
 
 ---
@@ -333,13 +343,85 @@ Selecionar imagens de exames cardiológicos para alimentar futuros algoritmos de
 
 ---
 
+## Ir Além 2a - MLP para Classificação de Batimentos Cardíacos
+
+### Objetivo
+
+Aplicar uma rede neural MLP (Perceptron Multicamadas) com Keras para classificar
+batimentos cardíacos do dataset MIT-BIH Heartbeat como normal ou anormal.
+
+### Dataset
+
+| Propriedade | Valor |
+|-------------|-------|
+| Origem | [Kaggle - shayanfazeli/heartbeat](https://www.kaggle.com/datasets/shayanfazeli/heartbeat) |
+| Treino | 87.554 batimentos (187 amostras do sinal + 1 classe) |
+| Teste | 21.892 batimentos |
+| Classes originais | 5 (Normal, Supraventricular, Ventricular, Fusão, Desconhecido) |
+| Classes binárias | 2 (Normal 82.8% vs. Anormal 17.2%) |
+
+### Notebook
+
+O notebook [`notebooks/mlp_heartbeat_v2.ipynb`](notebooks/mlp_heartbeat_v2.ipynb) (v2) implementa:
+
+1. Carregamento e binarização do dataset (5 classes → 2)
+2. Embaralhamento dos dados e compensação de desbalanceamento via `class_weight`
+3. MLP com 3 camadas densas (128→64→32) + BatchNormalization + Dropout
+4. Treinamento com Adam (lr=0.0005), early stopping (patience=10) e validation split
+5. Avaliação: acurácia, precision, recall, F1, matriz de confusão, recall por classe original
+
+### Resultados (v2)
+
+| Métrica | Valor |
+|---------|-------|
+| Acurácia | 0.976 |
+| Recall Normal | 0.985 |
+| Recall Anormal | 0.933 |
+| F1-macro | 0.959 |
+| Taxa de Falsos Negativos | 6.65% |
+
+### Recall por classe original
+
+| Classe | Recall |
+|--------|--------|
+| Normal (N) | 0.985 |
+| Supraventricular (S) | 0.732 |
+| Ventricular (V) | 0.963 |
+| Fusão (F) | 0.852 |
+| Desconhecido (Q) | 0.985 |
+
+### Evolução do modelo
+
+O modelo v1 (`mlp_heartbeat_v1.ipynb`) atingiu apenas 5.17% de recall Anormal —
+praticamente não detectava arritmias. A análise de falha identificou que o
+`validation_split` do Keras extraía uma fatia não-representativa do CSV ordenado,
+causando early stopping prematuro na época 6. A correção principal embaralha os
+dados antes do treino. O modelo v2 atinge 93.3% de recall Anormal — melhoria de
+18x.
+
+| Métrica | v1 | v2 | Melhoria |
+|---------|----|----|----------|
+| Recall Anormal | 0.052 | 0.933 | 18x |
+| F1-macro | 0.504 | 0.959 | 1.9x |
+| Taxa FN | 94.83% | 6.65% | 14x redução |
+
+A documentação completa do raciocínio técnico (9 capítulos + 4 scripts complementares)
+está em [`docs/raciocinio/mlp-heartbeat/`](docs/raciocinio/mlp-heartbeat/).
+
+### Vídeo
+
+[Link do vídeo no YouTube (não listado)](<!-- INSERIR LINK DO VÍDEO AQUI -->)
+
+---
+
 ## Como executar
 
 ### Requisitos
 
 - Python 3.11+
 - pytest (apenas para testes)
-- Nenhuma dependência externa para o código de produção
+- TensorFlow/Keras, NumPy, Pandas, matplotlib, scikit-learn (para o Ir Além 2a)
+- Nenhuma dependência externa para o código de produção do pipeline de extração
 
 ### Gerar dataset numérico (Fase 1)
 
@@ -351,6 +433,16 @@ python scripts/gerar_dados_numericos.py
 
 ```bash
 PYTHONPATH=scripts python -m cardio_extrator
+```
+
+### Executar notebook MLP Heartbeat (Ir Além 2a)
+
+```bash
+# baixar dataset (requer kaggle CLI configurado)
+kaggle datasets download -d shayanfazeli/heartbeat -p data/numericos/heartbeat --unzip
+
+# executar notebook
+cd notebooks && jupyter nbconvert --to notebook --execute mlp_heartbeat_v2.ipynb
 ```
 
 ### Executar testes
@@ -385,7 +477,10 @@ O arquivo [`tests/test_extracao.py`](tests/test_extracao.py) contém 48 testes a
 | Tecnologia | Uso |
 |-----------|-----|
 | Python 3.11+ | Linguagem principal |
-| Biblioteca padrão (`re`, `json`, `csv`, `pathlib`, `bisect`, `argparse`, `logging`, `dataclasses`) | Todo o código de produção |
+| Biblioteca padrão (`re`, `json`, `csv`, `pathlib`, `bisect`, `argparse`, `logging`, `dataclasses`) | Pipeline de extração (código de produção) |
+| scikit-learn | Métricas, class_weight, TF-IDF (classificador + MLP) |
+| TensorFlow/Keras | Construção, treino e avaliação da MLP (Ir Além 2a) |
+| NumPy, Pandas, matplotlib | Manipulação de dados e visualização |
 | pytest | Framework de testes |
 
 O projeto utiliza exclusivamente a biblioteca padrão do Python para o código de produção. Sistemas clínicos de apoio à decisão exigem determinismo e auditabilidade — cada decisão diagnóstica deve ser rastreável a uma regra explícita no mapa de conhecimento. Modelos de linguagem (LLMs) ou bibliotecas de NLP como spaCy introduziriam não-determinismo, dependências pesadas e impossibilidade de auditar por que o sistema chegou a uma conclusão específica. A escolha de regex pré-compilados garante que o pipeline produz exatamente o mesmo resultado para o mesmo input, sempre.
