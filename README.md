@@ -412,7 +412,7 @@ está em [`docs/raciocinio/mlp-heartbeat/`](docs/raciocinio/mlp-heartbeat/).
 > O YouTube estava deletando meu video. Tive que separar em duas partes:
 
 [Fase 2 Obrigatória - PARTE 1 - EXTRAÇÃO DE SINTOMAS](https://youtu.be/XheDuewAfKI)
-[Fase 2 Obrigatória - PARTE 2 - CLASSIFICADOR TF-IDF](https://youtu.be/XheDuewAfKI)
+[Fase 2 Obrigatória - PARTE 2 - CLASSIFICADOR TF-IDF](https://youtu.be/MAaB64KlukE)
 
 ---
 
