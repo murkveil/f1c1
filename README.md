@@ -410,7 +410,7 @@ está em [`docs/raciocinio/mlp-heartbeat/`](docs/raciocinio/mlp-heartbeat/).
 
 ### Vídeo
 
-[Link do vídeo no YouTube (não listado)](<!-- INSERIR LINK DO VÍDEO AQUI -->)
+[Fase 2 Obrigatória (PARTE 1 e 2)](https://youtu.be/D638mdVhvE0)
 
 ---
 
