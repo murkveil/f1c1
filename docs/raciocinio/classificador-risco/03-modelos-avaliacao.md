@@ -36,9 +36,12 @@ instáveis (alta variância).
 ## Análise de coeficientes da Logistic Regression
 
 O scikit-learn ordena as classes lexicograficamente: `classes_ = ["alto risco",
-"baixo risco"]`, logo `alto risco = índice 0` e `baixo risco = índice 1`.
-Coeficientes positivos apontam para a classe de índice 1 ("baixo risco") e
-coeficientes negativos apontam para a classe de índice 0 ("alto risco").
+"baixo risco"]`, logo `alto risco = índice 0` e `baixo risco = índice 1`. A
+atribuição interna do `LogisticRegression` faz `coef_[0]` mapear para a classe
+de índice 1 — por convenção da implementação. Consequência:
+
+- Coeficientes **positivos** apontam para a classe de índice 1 ("baixo risco")
+- Coeficientes **negativos** apontam para a classe de índice 0 ("alto risco")
 
 **Termos indicativos de alto risco (coeficientes negativos):**
 - "no peito" (-0.937), "sinto dor" (-0.892), "esforço" (-0.644), "forte" (-0.550),
@@ -47,11 +50,16 @@ coeficientes negativos apontam para a classe de índice 0 ("alto risco").
 **Termos indicativos de baixo risco (coeficientes positivos):**
 - "leve" (+1.190), "uma leve" (+0.785), "depois" (+0.746), "nas costas" (+0.527)
 
-O notebook original exibe "Top-15 termos indicativos de ALTO RISCO" ordenando
-por coeficiente decrescente (positivo). Essa rotulação inverte a interpretação
-real — os coeficientes positivos indicam "baixo risco", não "alto risco". O
-documento [`docs/classificador-risco-cardiovascular.md`](../../classificador-risco-cardiovascular.md)
-detalha essa discrepância com precisão técnica.
+### Histórico: inversão de rótulos corrigida
+
+A primeira versão do notebook invertia os rótulos — rotulava a lista ordenada
+por coeficiente decrescente (positivos) como "Top-15 termos indicativos de ALTO
+RISCO", o que contradizia a convenção da scikit-learn. O bug foi corrigido
+aplicando `np.argsort(coeficientes)[:15]` (mais negativos) à lista de alto
+risco e `np.argsort(coeficientes)[::-1][:15]` (mais positivos) à lista de
+baixo risco, invertendo-se a convenção original. A célula Markdown que
+descreve os coeficientes foi reescrita para declarar explicitamente a
+convenção de indexação.
 
 ## Custo assimétrico de erros
 

@@ -144,7 +144,7 @@ Os termos com maior IDF aparecem em poucos documentos, o que eleva o denominador
 
 O scikit-learn ordena as classes lexicograficamente: `sorted(["alto risco", "baixo risco"])` produz `classes_ = ["alto risco", "baixo risco"]`, logo `alto risco = índice 0` e `baixo risco = índice 1`. Na classificação binária, `coef_[0]` contém um único vetor: **coeficientes positivos apontam para a classe de índice 1 ("baixo risco")** e **coeficientes negativos apontam para a classe de índice 0 ("alto risco")**.
 
-O notebook original exibe "Top-15 termos indicativos de ALTO RISCO" ordenando por coeficiente decrescente (positivo). Essa rotulação inverte a interpretação real — os coeficientes positivos indicam "baixo risco", não "alto risco". A tabela correta:
+A primeira versão do notebook invertia os rótulos — listava coeficientes decrescentes (positivos) sob o cabeçalho "Top-15 termos indicativos de ALTO RISCO", contradizendo a convenção da scikit-learn. A célula foi corrigida (troca das fatias `np.argsort(...)[:15]` e `np.argsort(...)[::-1][:15]`) e a saída atual do notebook reflete a interpretação real:
 
 **Termos indicativos de BAIXO RISCO (coeficientes positivos, classe índice 1):**
 
