@@ -1,0 +1,21 @@
+sintoma_1,sintoma_2,sintoma_3,sintoma_4,doenca_associada
+dor torácica opressiva,irradiação para membro superior esquerdo,alívio com repouso ou nitrato,,Doença Arterial Coronariana
+dor torácica ao esforço,sudorese fria,náusea,,Doença Arterial Coronariana
+dispneia de esforço isolada,fadiga súbita,,,Doença Arterial Coronariana
+dor retroesternal com irradiação para mandíbula,aperto no peito,,,Doença Arterial Coronariana
+dispneia progressiva,ortopneia,edema de membros inferiores,,Insuficiência Cardíaca
+dispneia paroxística noturna,tosse seca noturna,edema vespertino bilateral,,Insuficiência Cardíaca
+fadiga desproporcional ao esforço,distensão abdominal,ganho de peso súbito,,Insuficiência Cardíaca
+cansaço constante,falta de ar ao deitar,inchaço nas pernas,noctúria,Insuficiência Cardíaca
+palpitações irregulares,coração disparado,falhas nos batimentos,,Fibrilação Atrial
+palpitações de início súbito,tontura,fadiga,dispneia desproporcional,Fibrilação Atrial
+dispneia de esforço,angina de esforço,síncope de esforço,,Estenose Aórtica
+dor torácica ao esforço,tontura ao levantar,desmaio durante atividade física,,Estenose Aórtica
+cefaleia occipital matutina,tontura,zumbido,,Hipertensão Arterial Sistêmica
+visão turva,epistaxe,cefaleia pulsátil,,Hipertensão Arterial Sistêmica
+dor torácica após gripe,febre,fadiga prolongada,palpitações,Miocardite
+dor precordial com pródromo viral,dispneia,mialgia,,Miocardite
+dor torácica pleurítica,piora ao deitar,alívio ao inclinar para frente,,Pericardite
+dor torácica que piora com respiração,irradiação para trapézio,febre,,Pericardite
+dispneia de esforço,dor torácica,síncope durante exercício,palpitações,Cardiomiopatia Hipertrófica
+desmaio ao esforço,falta de ar ao subir escadas,dor no peito,história familiar de morte súbita,Cardiomiopatia Hipertrófica

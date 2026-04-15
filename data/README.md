@@ -6,13 +6,18 @@ Diretório central de dados do projeto CardioIA. Armazena todos os datasets que 
 
 ```
 data/
-|-- numericos/          # Parte 1 - datasets tabulares (.csv)
-|-- textuais/           # Parte 2 - textos médicos (.txt)
-|   |-- massa_et_al_2019_prevalencia_dcv_idosos.txt
-|   |-- bonotto_et_al_2016_fatores_risco_dcv_mulheres.txt
-|-- visuais/            # Parte 3 - imagens de exames cardiológicos (.jpg/.png)
-|   |-- ecg/           # eletrocardiogramas (.png)
-|   |-- raio_x_toracico/  # raio-X de torax (.jpeg/.jpg/.png)
+|-- numericos/
+|   |-- dataset_cardiologico.csv             # Fase 1 - 300 pacientes (18 variáveis)
+|-- textuais/
+|   |-- massa_et_al_2019_prevalencia_dcv_idosos.txt      # Fase 1 - paper NLP
+|   |-- bonotto_et_al_2016_fatores_risco_dcv_mulheres.txt  # Fase 1 - paper NLP
+|   |-- sintomas_pacientes.txt               # Fase 2 - 10 relatos de pacientes
+|   |-- mapa_conhecimento.json               # Fase 2 - ontologia (8 doenças, scoring)
+|   |-- mapa_conhecimento.csv                # Fase 2 - visão tabulada (20 combinações)
+|   |-- frases_risco.csv                     # Fase 2 - 160 frases rotuladas (alto/baixo risco)
+|-- visuais/
+|   |-- ecg/                                 # Fase 1 - 50 ECGs (.png)
+|   |-- raio_x_toracico/                     # Fase 1 - 50 raios-X (.jpeg/.jpg/.png)
 ```
 
 ## Por que `data/` e não `docs/` ou `assets/`?
@@ -130,7 +135,7 @@ As variáveis do dataset foram selecionadas com base nos principais fatores de r
 
 #### Importância para Inteligência Artificial em saúde
 
-O dataset foi projetado para alimentar múltiplos módulos de IA nas fases futuras do CardioIA:
+O script projeta o dataset para alimentar múltiplos módulos de IA nas fases futuras do CardioIA:
 
 - Modelos de classificação (Random Forest, XGBoost, redes neurais) podem utilizar `doenca_cardiaca` como variável alvo para prever risco cardiovascular a partir dos fatores clínicos
 - Algoritmos de clusterização (K-Means, DBSCAN) podem identificar perfis de pacientes com características semelhantes, apoiando a estratificação de risco
@@ -214,6 +219,115 @@ Cada arquivo `.txt` segue a mesma estrutura:
 2. Texto completo organizado por seções (resumo, introdução, metodologia, resultados, discussão, limitações, conclusão)
 
 Essa estrutura facilita o pré-processamento por pipelines de NLP, permitindo segmentação automática por seções e extração de metadados via parsing do cabeçalho.
+
+### sintomas_pacientes.txt (Fase 2)
+
+Arquivo de entrada do pipeline de extração de sintomas (`cardio_extrator`). Contém 10 relatos simulados de pacientes cardiológicos, um por linha.
+
+| Propriedade | Valor |
+|-------------|-------|
+| Formato | Texto puro, UTF-8, um relato por linha |
+| Linhas | 10 |
+| Idioma | Português brasileiro |
+
+Cada relato descreve o que o paciente sente, quando começou e como os sintomas afetam sua rotina. Os 10 relatos exercitam as 8 doenças cardiovasculares do mapa de conhecimento:
+
+| Relato | Doença exercitada | Achados-chave |
+|--------|-------------------|---------------|
+| 1 | Doença Arterial Coronariana | Dor opressiva, irradiação MSE, alívio ao repouso |
+| 2 | Insuficiência Cardíaca | DPN, edema MMII, fadiga |
+| 3 | Fibrilação Atrial | Palpitações irregulares, início súbito |
+| 4 | Estenose Aórtica | Tríade dispneia-angina-síncope de esforço |
+| 5 | Hipertensão Arterial | Cefaleia occipital, tontura, zumbido, epistaxe, visão turva |
+| 6 | Miocardite | Pródromo viral, dor torácica, febre, taquicardia |
+| 7 | Pericardite | Dor pleurítica, alívio inclinado, irradiação trapézio |
+| 8 | Cardiomiopatia Hipertrófica | Síncope de esforço, história familiar morte súbita |
+| 9 | Insuficiência Cardíaca | Ortopneia (3 travesseiros), edema, noctúria |
+| 10 | Fibrilação Atrial | Palpitações paroxísticas, precipitantes (café, estresse) |
+
+### mapa_conhecimento.json (Fase 2)
+
+Ontologia clínica que o motor de inferência do `cardio_extrator` consome. O JSON define a base de conhecimento completa para diagnóstico diferencial cardiovascular.
+
+| Propriedade | Valor |
+|-------------|-------|
+| Formato | JSON, UTF-8 |
+| Linhas | 758 |
+| Doenças | 8 |
+| Red flags | 5 |
+
+#### Por que JSON e não CSV ou YAML
+
+O mapa de conhecimento contém estruturas aninhadas com profundidade variável — uma doença possui sintomas com pesos, regras de bonificação com condições compostas (AND/OR/COUNT_GE) e fatores de risco. CSV não suporta aninhamento sem achatamento destrutivo que perderia a semântica das relações hierárquicas. YAML suportaria a estrutura, mas adiciona ambiguidade de tipos (strings vs booleanos, indentação significativa) e não possui suporte nativo na stdlib do Python sem dependência externa (`pyyaml`). JSON é nativo na stdlib (`json`), não-ambíguo em tipos e suporta aninhamento arbitrário.
+
+#### Estrutura do JSON
+
+```
+mapa_conhecimento.json
+|-- <chave_doença>              # 8 doenças
+|   |-- nome_exibicao           # nome com acentos para saída
+|   |-- sigla                   # sigla clínica (DAC, IC, FA, etc.)
+|   |-- sinais                  # lista de sinais ao exame físico (referência)
+|   |-- qualificadores_referencia  # qualificadores semiológicos descritivos
+|   |-- discriminadores         # achados de alto valor discriminativo (texto livre)
+|   |-- scoring
+|   |   |-- sintomas            # {sintoma: {peso_base: float}}
+|   |   |-- regras_bonificacao  # [{condicao, bonus, justificativa}]
+|   |   |-- regras_exclusao     # [{condicao, penalidade, justificativa}]
+|   |   |-- fatores_risco       # {fator: peso}
+|-- intersecoes                 # {sintoma: [doenças que compartilham]}
+|-- ambiguidades_clinicas       # [{par, sobreposição, diferenciação}]
+|-- red_flags                   # [{nome, condicao, mensagem, prioridade}]
+```
+
+#### Doenças cobertas
+
+| Doença | Sigla | Sintomas (scoring) | Bônus | Exclusões | Fatores de risco |
+|--------|-------|---------------------|-------|-----------|------------------|
+| Doença Arterial Coronariana | DAC | 6 | 6 | 2 | 5 |
+| Insuficiência Cardíaca | IC | 10 | 4 | 0 | 4 |
+| Fibrilação Atrial | FA | 5 | 3 | 0 | 3 |
+| Estenose Aórtica | EAo | 3 | 3 | 0 | 0 |
+| Hipertensão Arterial Sistêmica | HAS | 7 | 1 | 0 | 4 |
+| Miocardite | - | 7 | 3 | 0 | 0 |
+| Pericardite | - | 5 | 5 | 1 | 0 |
+| Cardiomiopatia Hipertrófica | CMH | 4 | 2 | 0 | 0 |
+
+### mapa_conhecimento.csv (Fase 2)
+
+Visão tabulada do mapa de conhecimento que satisfaz o formato exigido pelo enunciado da atividade (Sintoma 1 | Sintoma 2 | Doença Associada). O enunciado solicita um arquivo CSV com associações sintoma-doença — este CSV cumpre esse requisito com 20 combinações e 4 colunas de sintomas.
+
+| Propriedade | Valor |
+|-------------|-------|
+| Formato | CSV, UTF-8, separador vírgula |
+| Linhas | 20 (+ 1 cabeçalho) |
+| Colunas | sintoma_1, sintoma_2, sintoma_3, sintoma_4, doenca_associada |
+
+O CSV é uma projeção simplificada do JSON — o motor de inferência do `cardio_extrator` consome o JSON (que contém pesos, bônus e condições compostas), não o CSV. O CSV existe como entregável do enunciado e como referência tabulada para consulta rápida.
+
+### frases_risco.csv (Fase 2)
+
+Dataset de frases médicas rotuladas para treinamento do classificador de risco cardiovascular (`notebooks/classificador_risco.ipynb`). O notebook consome este CSV como entrada para vetorização TF-IDF e classificação binária.
+
+| Propriedade | Valor |
+|-------------|-------|
+| Formato | CSV, UTF-8, separador vírgula |
+| Linhas | 160 (+ 1 cabeçalho) |
+| Colunas | `frase`, `situacao` |
+| Alto risco | 81 (50.6%) |
+| Baixo risco | 79 (49.4%) |
+| Ambíguas intencionais | ~15-20% |
+
+O dataset inclui intencionalmente ~25-30 frases na fronteira de decisão clínica (dor torácica atípica, palpitações isoladas, tontura posicional, dispneia crônica leve em sedentário) para testar a robustez da fronteira de decisão dos classificadores e simular a incerteza real da prática clínica.
+
+Critérios de rotulação:
+
+| Rótulo | Critério |
+|--------|----------|
+| **alto risco** | Sintomas sugestivos de emergência cardiovascular: dor torácica opressiva/com irradiação, dispneia aguda, síncope, palpitações com instabilidade, sinais de IC descompensada |
+| **baixo risco** | Queixas benignas ou crônicas estáveis: dor musculoesquelética localizada, cansaço leve, incômodo passageiro, sintomas inespecíficos sem urgência |
+
+A documentação técnica completa (processo de construção, exemplos por categoria, validação do rótulo, limitações) está em [`../docs/classificador-risco-cardiovascular.md`](../docs/classificador-risco-cardiovascular.md).
 
 ---
 

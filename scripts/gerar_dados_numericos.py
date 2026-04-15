@@ -1,18 +1,18 @@
 """
-Gera dataset sintetico de pacientes cardiologicos para o projeto CardioIA.
+Gera dataset sintético de pacientes cardiológicos para o projeto CardioIA.
 
-O script produz dados clinicamente coerentes aplicando correlacoes entre
-fatores de risco cardiovascular (idade, hipertensao, colesterol, diabetes,
-tabagismo) e a presenca de doenca cardiaca.
+O script produz dados clinicamente coerentes aplicando correlações entre
+fatores de risco cardiovascular (idade, hipertensão, colesterol, diabetes,
+tabagismo) e a presença de doença cardíaca.
 
-Saida: data/numericos/dataset_cardiologico.csv
+Saída: data/numericos/dataset_cardiologico.csv
 
-Variaveis geradas (18 colunas):
+Variáveis geradas (18 colunas):
 
-    Demograficas:
-        id_paciente                  - Identificador unico do paciente (int)
+    Demográficas:
+        id_paciente                  - Identificador único do paciente (int)
         idade                        - Idade em anos, entre 25 e 85 (int)
-        sexo                         - Sexo biologico: M ou F (str)
+        sexo                         - Sexo biológico: M ou F (str)
 
     Sinais vitais:
         pressao_arterial_sistolica   - mmHg, entre 90 e 200 (int)
@@ -26,42 +26,42 @@ Variaveis geradas (18 colunas):
         triglicerideos               - mg/dL, entre 50 e 500 (int)
         glicemia_jejum               - mg/dL, entre 65 e 300 (int)
 
-    Indicadores clinicos:
+    Indicadores clínicos:
         diabetes                     - Glicemia >= 126 mg/dL (bool)
-        imc                          - Indice de massa corporal, entre 16.0 e 45.0 (float)
+        imc                          - Índice de massa corporal, entre 16.0 e 45.0 (float)
 
-    Historico e habitos:
+    Histórico e hábitos:
         tabagismo                    - Paciente fumante (bool)
-        atividade_fisica             - Pratica atividade fisica regular (bool)
-        historico_familiar_cardiaco  - Historico familiar de doenca cardiaca (bool)
+        atividade_fisica             - Pratica atividade física regular (bool)
+        historico_familiar_cardiaco  - Histórico familiar de doença cardíaca (bool)
 
-    Sintomas e diagnostico:
+    Sintomas e diagnóstico:
         tipo_dor_toracica            - angina_tipica, angina_atipica,
                                        dor_nao_cardiaca ou assintomatico (str)
-        sintomas                     - Lista separada por ponto e virgula (str)
-        doenca_cardiaca              - Variavel alvo / target (bool)
+        sintomas                     - Lista separada por ponto e vírgula (str)
+        doenca_cardiaca              - Variável alvo / target (bool)
 
-Correlacoes aplicadas:
+Correlações aplicadas:
 
-    A idade eleva a pressao arterial sistolica em 0.6 mmHg por ano acima de 25.
+    A idade eleva a pressão arterial sistólica em 0.6 mmHg por ano acima de 25.
     O tabagismo adiciona 15 mg/dL ao colesterol total basal.
     Mulheres recebem colesterol HDL basal de 55 mg/dL; homens, 45 mg/dL.
-    A ausencia de atividade fisica eleva o IMC basal de 26.5 para 29.0.
+    A ausência de atividade física eleva o IMC basal de 26.5 para 29.0.
     O IMC eleva a glicemia de jejum em 2.5 mg/dL por ponto acima de 22.
-    A atividade fisica reduz a frequencia cardiaca basal de 75 para 65 bpm.
+    A atividade física reduz a frequência cardíaca basal de 75 para 65 bpm.
 
-    A funcao calcular_risco() acumula incrementos de probabilidade para cada
-    fator presente (idade, sexo, hipertensao, colesterol, HDL baixo, glicemia,
-    tabagismo, IMC, sedentarismo, historico familiar) e o resultado determina
-    a presenca de doenca cardiaca. O teto de risco e 0.95.
+    A função calcular_risco() acumula incrementos de probabilidade para cada
+    fator presente (idade, sexo, hipertensão, colesterol, HDL baixo, glicemia,
+    tabagismo, IMC, sedentarismo, histórico familiar) e o resultado determina
+    a presença de doença cardíaca. O teto de risco é 0.95.
 
-    Pacientes com doenca cardiaca recebem maior probabilidade de angina tipica
-    (45%) e mais sintomas (1-4). Pacientes sem doenca recebem maior
-    probabilidade de assintomatico (55%) e menos sintomas (0-2).
+    Pacientes com doença cardíaca recebem maior probabilidade de angina típica
+    (45%) e mais sintomas (1-4). Pacientes sem doença recebem maior
+    probabilidade de assintomático (55%) e menos sintomas (0-2).
 
-Reproducibilidade:
+Reprodutibilidade:
 
-    O script utiliza seed fixa (SEED = 42) para garantir que execucoes
+    O script utiliza seed fixa (SEED = 42) para garantir que execuções
     repetidas produzam o mesmo dataset.
 """
 
@@ -69,13 +69,13 @@ import csv
 import random
 from pathlib import Path
 
-# seed fixa para reproducibilidade entre execucoes
+# seed fixa para reprodutibilidade entre execuções
 SEED = 42
 
-# 300 pacientes (3x o minimo exigido pela atividade)
+# 300 pacientes (3x o mínimo exigido pela atividade)
 NUM_PACIENTES = 300
 
-# sintomas cardiovasculares comuns utilizados na geracao dos dados
+# sintomas cardiovasculares comuns utilizados na geração dos dados
 SINTOMAS_POSSIVEIS = [
     "dor_toracica",
     "dispneia",
@@ -86,7 +86,7 @@ SINTOMAS_POSSIVEIS = [
     "sincope",
 ]
 
-# classificacao clinica da dor toracica segundo padrao cardiologico
+# classificação clínica da dor torácica segundo padrão cardiológico
 TIPOS_DOR_TORACICA = [
     "angina_tipica",
     "angina_atipica",
@@ -95,8 +95,8 @@ TIPOS_DOR_TORACICA = [
 ]
 
 
-# cada tupla define (limiar, incremento) em ordem crescente de limiar.
-# a iteração retorna o incremento da faixa mais alta que o valor atinge.
+# cada tupla define (limiar, incremento) em ordem crescente de limiar
+# a iteração retorna o incremento da faixa mais alta que o valor atinge
 FAIXAS_RISCO = {
     "idade":                       [(40, 0.05), (50, 0.15), (65, 0.25)],
     "pressao_arterial_sistolica":  [(130, 0.08), (140, 0.15)],
@@ -105,7 +105,7 @@ FAIXAS_RISCO = {
     "imc":                         [(25, 0.05), (30, 0.10)],
 }
 
-# cada tupla define (campo, condicao_para_incremento, incremento)
+# cada tupla define (campo, condição_para_incremento, incremento)
 FATORES_BOOLEANOS = [
     ("sexo",                        lambda v: v == "M",  0.05),
     ("colesterol_hdl",              lambda v: v < 40,    0.10),
@@ -131,8 +131,8 @@ def calcular_risco(paciente: dict) -> float:
     """Acumula incrementos de probabilidade para cada fator de risco presente.
 
     Cada fator contribui com um incremento fixo ao risco basal de 0.05.
-    O risco total nunca ultrapassa 0.95. A funcao retorna a probabilidade
-    final que o gerador utiliza para determinar a presenca de doenca cardiaca.
+    O risco total nunca ultrapassa 0.95. A função retorna a probabilidade
+    final que o gerador utiliza para determinar a presença de doença cardíaca.
     """
     risco = RISCO_BASAL
 
@@ -151,11 +151,11 @@ def calcular_risco(paciente: dict) -> float:
 
 
 def _sortear_perfil_base() -> tuple[dict, dict]:
-    """Sorteia variaveis demograficas e habitos de vida do paciente.
+    """Sorteia variáveis demográficas e hábitos de vida do paciente.
 
-    As prevalencias refletem dados epidemiologicos brasileiros:
-    tabagismo ~22% (IBGE/PNS), atividade fisica regular ~55%,
-    historico familiar cardiaco ~25%.
+    As prevalências refletem dados epidemiológicos brasileiros:
+    tabagismo ~22% (IBGE/PNS), atividade física regular ~55%,
+    histórico familiar cardíaco ~25%.
 
     Retorna dois dicts separados (demograficos, habitos) para preservar
     a ordem original das colunas no CSV ao fazer o merge.
@@ -173,7 +173,7 @@ def _sortear_perfil_base() -> tuple[dict, dict]:
 
 
 def _clamp(valor, minimo, maximo):
-    """Restringe valor ao intervalo [minimo, maximo]."""
+    """Restringe valor ao intervalo [mínimo, máximo]."""
     return max(minimo, min(maximo, valor))
 
 
@@ -189,12 +189,12 @@ def _derivar_sinais_e_exames(demograficos: dict, habitos: dict) -> dict:
     tabagismo = habitos["tabagismo"]
     atividade_fisica = habitos["atividade_fisica"]
 
-    # a pressao sistolica sobe em media 0.6 mmHg por ano acima dos 25
+    # a pressão sistólica sobe em média 0.6 mmHg por ano acima dos 25
     base_sistolica = 110 + (idade - 25) * 0.6
     pressao_sistolica = _clamp(int(random.gauss(base_sistolica, 15)), 90, 200)
     pressao_diastolica = _clamp(int(pressao_sistolica * random.gauss(0.62, 0.04)), 55, 120)
 
-    # o colesterol total sobe em media 0.8 mg/dL por ano acima dos 25
+    # o colesterol total sobe em média 0.8 mg/dL por ano acima dos 25
     # o tabagismo adiciona 15 mg/dL ao valor basal
     base_colesterol = 160 + (idade - 25) * 0.8 + (15 if tabagismo else 0)
     colesterol_total = _clamp(int(random.gauss(base_colesterol, 30)), 120, 350)
@@ -208,7 +208,7 @@ def _derivar_sinais_e_exames(demograficos: dict, habitos: dict) -> dict:
     base_glicemia = 85 + (imc - 22) * 2.5
     glicemia_jejum = _clamp(int(random.gauss(base_glicemia, 15)), 65, 300)
 
-    # pacientes ativos apresentam frequencia cardiaca basal menor (65 vs 75 bpm)
+    # pacientes ativos apresentam frequência cardíaca basal menor (65 vs 75 bpm)
     base_fc = 65 if atividade_fisica else 75
     frequencia_cardiaca = _clamp(int(random.gauss(base_fc, 10)), 45, 120)
 
@@ -226,7 +226,7 @@ def _derivar_sinais_e_exames(demograficos: dict, habitos: dict) -> dict:
     }
 
 
-# pesos de tipo de dor e faixa de sintomas por presenca/ausencia de doenca
+# pesos de tipo de dor e faixa de sintomas por presença/ausência de doença
 PERFIL_SINTOMAS = {
     True:  {"pesos_dor": [0.45, 0.30, 0.15, 0.10], "sintomas_range": (1, 4)},
     False: {"pesos_dor": [0.05, 0.10, 0.30, 0.55], "sintomas_range": (0, 2)},
@@ -234,10 +234,10 @@ PERFIL_SINTOMAS = {
 
 
 def _determinar_diagnostico(paciente: dict) -> dict:
-    """Determina doenca cardiaca e sintomas com base no risco acumulado.
+    """Determina doença cardíaca e sintomas com base no risco acumulado.
 
-    Pacientes doentes recebem angina tipica com 45% de chance e 1-4 sintomas.
-    Pacientes saudaveis recebem assintomatico com 55% de chance e 0-2 sintomas.
+    Pacientes doentes recebem angina típica com 45% de chance e 1-4 sintomas.
+    Pacientes saudáveis recebem assintomático com 55% de chance e 0-2 sintomas.
     """
     doenca_cardiaca = random.random() < calcular_risco(paciente)
     perfil = PERFIL_SINTOMAS[doenca_cardiaca]
@@ -254,17 +254,17 @@ def _determinar_diagnostico(paciente: dict) -> dict:
 
 
 def gerar_paciente(paciente_id: int) -> dict:
-    """Orquestra a geracao de um paciente em tres etapas.
+    """Orquestra a geração de um paciente em três etapas.
 
     1. Sorteia perfil demografico e habitos de vida
-    2. Deriva sinais vitais e exames laboratoriais com correlacoes clinicas
-    3. Determina doenca cardiaca e sintomas pelo risco acumulado
+    2. Deriva sinais vitais e exames laboratoriais com correlações clínicas
+    3. Determina doença cardíaca e sintomas pelo risco acumulado
     """
     demograficos, habitos = _sortear_perfil_base()
     exames = _derivar_sinais_e_exames(demograficos, habitos)
 
     # a ordem do merge preserva a ordem original das colunas no CSV:
-    # demograficos -> exames -> habitos
+    # demográficos -> exames -> hábitos
     paciente = {"id_paciente": paciente_id, **demograficos, **exames, **habitos}
     diagnostico = _determinar_diagnostico(paciente)
 
@@ -274,8 +274,8 @@ def gerar_paciente(paciente_id: int) -> dict:
 def main():
     """Gera o dataset e grava o CSV em data/numericos/dataset_cardiologico.csv.
 
-    Exibe no terminal o total de pacientes e a distribuicao entre doentes e
-    saudaveis para validacao rapida apos a execucao.
+    Exibe no terminal o total de pacientes e a distribuição entre doentes e
+    saudáveis para validação rápida após a execução.
     """
     random.seed(SEED)
 
@@ -295,8 +295,8 @@ def main():
     print(f"Total de pacientes: {len(pacientes)}")
 
     total_doentes = sum(1 for p in pacientes if p["doenca_cardiaca"])
-    print(f"Com doenca cardiaca: {total_doentes} ({total_doentes/len(pacientes)*100:.1f}%)")
-    print(f"Sem doenca cardiaca: {len(pacientes)-total_doentes} ({(len(pacientes)-total_doentes)/len(pacientes)*100:.1f}%)")
+    print(f"Com doença cardíaca: {total_doentes} ({total_doentes/len(pacientes)*100:.1f}%)")
+    print(f"Sem doença cardíaca: {len(pacientes)-total_doentes} ({(len(pacientes)-total_doentes)/len(pacientes)*100:.1f}%)")
 
 
 if __name__ == "__main__":
