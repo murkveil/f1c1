@@ -1,4 +1,4 @@
-# X. Aceleração por GPU na Fedora 42 com Secure Boot
+# X. Aceleração por GPU no Fedora 42 com Secure Boot
 
 ## O problema
 
@@ -95,7 +95,7 @@ O TensorFlow usa `dlopen()` em tempo de execução para carregar essas
 Em distribuições onde o TensorFlow é instalado em ambiente isolado
 (`venv`, `conda`), existem *hooks* que resolvem esse path
 automaticamente via `__init__.py` dos pacotes `nvidia-*`. No install
-`--user` sobre o Python global da Fedora, esses hooks não têm efeito
+`--user` sobre o Python global do Fedora, esses hooks não têm efeito
 sobre o dynamic linker porque a variável de ambiente só é lida **no
 momento do `execve`** do processo Python — modificar `os.environ`
 depois não adianta.

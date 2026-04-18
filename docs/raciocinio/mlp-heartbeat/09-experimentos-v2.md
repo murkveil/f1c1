@@ -81,10 +81,12 @@ das últimas 15% do CSV ordenado. O embaralhamento garante que cada fatia conté
 ~82.8% Normal e ~17.2% Anormal, permitindo que o early stopping monitore uma
 validação representativa.
 
-**Reduzir a learning rate (C2) melhorou marginalmente.** A variante C (lr=0.001,
-sem BatchNorm) atinge recall 0.942 vs 0.940 da variante A (lr=0.0005, sem
-BatchNorm) — diferença de 0.2 pontos percentuais. A learning rate não era a causa
-da falha.
+**Reduzir a learning rate (C2) não teve efeito prático.** A variante C (lr=0.001,
+sem BatchNorm) atinge recall 0.942, ligeiramente superior ao 0.940 da variante A
+(lr=0.0005, sem BatchNorm) — diferença de 0.2 pontos percentuais, dentro da
+variação estocástica do treino em GPU documentada no capítulo XII. A direção da
+diferença (lr maior sendo marginalmente melhor) é oposta à hipótese do capítulo
+VIII, confirmando que a learning rate não era a causa da falha do v1.
 
 **BatchNorm não prejudicou (refutando a hipótese da Causa 3 do capítulo VIII).**
 A variante B (com BatchNorm) atinge o melhor F1-macro (0.960) e a melhor acurácia

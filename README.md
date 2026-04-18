@@ -456,6 +456,32 @@ PYTHONPATH=scripts python -m pytest tests/ -v
 
 ---
 
+## Reprodutibilidade
+
+Os notebooks `mlp_heartbeat_v1.ipynb` e `mlp_heartbeat_v2.ipynb` fixam sementes via `np.random.seed(42)` e `tf.random.set_seed(42)`. Isso garante reprodutibilidade completa quando executados em **CPU**.
+
+Quando executados em **GPU** (CUDA), o TensorFlow introduz não-determinismo sutil devido a reduções paralelas do cuDNN e não-associatividade de ponto flutuante. Os valores finais das métricas podem variar em aproximadamente 0.5 a 2 pontos percentuais entre execuções consecutivas na mesma máquina, mesmo sem alterar código.
+
+Se a reprodutibilidade estrita é necessária — por exemplo, para comparar exatamente os valores citados no roteiro do vídeo ou na documentação técnica — habilite determinismo antes de importar o TensorFlow. Via variáveis de ambiente:
+
+```bash
+export TF_DETERMINISTIC_OPS=1
+export TF_CUDNN_DETERMINISTIC=1
+
+cd notebooks && jupyter nbconvert --to notebook --execute mlp_heartbeat_v2.ipynb
+```
+
+Ou, alternativamente, no código Python antes de qualquer operação do TensorFlow:
+
+```python
+import tensorflow as tf
+tf.config.experimental.enable_op_determinism()
+```
+
+Trade-off: o determinismo estrito tem custo de 20-40% em tempo de treino. Para este projeto, esse custo adicional é de aproximadamente 30 a 60 segundos sobre o treino base de 2 minutos. O detalhamento técnico do fenômeno — por que reduções paralelas violam determinismo, quais opções existem no TensorFlow, como os valores do roteiro foram capturados — está documentado em [`docs/raciocinio/mlp-heartbeat/12-nao-determinismo-gpu.md`](docs/raciocinio/mlp-heartbeat/12-nao-determinismo-gpu.md).
+
+---
+
 ## Testes
 
 O arquivo [`tests/test_extracao.py`](tests/test_extracao.py) contém 48 testes automatizados organizados em 10 classes que cobrem todas as camadas do pipeline de extração:
